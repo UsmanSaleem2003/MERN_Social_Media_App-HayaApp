@@ -1,0 +1,16 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.app-container{
+    display: flex;
+    width: 100%;
+}
+
+.routess{
+    margin-left: 200px;
+    width: 100%;
+    /* border: 1px solid black; */
+}

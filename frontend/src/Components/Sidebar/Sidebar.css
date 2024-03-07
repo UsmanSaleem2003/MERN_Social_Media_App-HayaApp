@@ -1,17 +1,26 @@
 .sidebar{
-    width: 15%;
-    height: auto;
+    width: 200px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    /* border: 1px solid black; */
-    border-right: 1px solid black;
-
+    border-right: 1px solid rgb(182, 182, 182);
+    overflow: hidden;
 }
 
 .logo{
     font-size: xx-large;
     margin: 15px 25px;
+}
+
+.logo a{
+    color: inherit;
+    text-decoration: none;
+    font-family: "Dancing Script", cursive;
+    font-weight: 700;
 }
 
 .sidebar-btns{
@@ -37,15 +46,11 @@
 }
 
 .sidebar-btns a:hover{
-    background-color: grey;
+    background-color: rgb(231, 231, 231);
     border-radius: 10px;
 }
 
 .sidebar-btns img{
     width: 30px;
     height: 30px;
-} 
-
-.sidebar-btns Link:hover{
-    background: grey;
 } 

@@ -1,0 +1,147 @@
+.post{
+    box-sizing: border-box;
+    width: 480px;
+    position: relative;
+}
+
+.head{
+    padding-bottom: 8px;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    align-items: center;
+    
+}
+
+.page-logo-img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    object-fit:cover;
+}
+
+.head-titles{
+    margin-left: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.dot{
+    color: rgb(163, 154, 154);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.menu-button{
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+}
+
+.menu-btn{
+    background-color: white;
+    border: none;
+    color: black;
+    display: flex;
+    cursor: pointer;
+    font-size: large;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    margin: 0px;
+    padding: 0;
+    right: 0;
+    top: 60%;
+    z-index: 2;
+    background-color: transparent;
+    backdrop-filter: blur(50px);
+}
+
+.menu div {
+    padding: 20px;
+    color: black;
+}
+
+.report{
+    color: red;
+    font-weight: 500;
+}
+
+.content-pic {
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.content-pic img {
+    width: 100%;
+    height: 650px;
+    display: block;
+    border-radius: 3px;
+}
+
+.bottom{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.post-buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 6px 0px;
+}
+
+.post-buttons img{
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.likes{
+    font-size: small;
+    font-weight: 700;
+    letter-spacing: 0.25px;
+}
+
+.description{
+    padding: 3px 0px;
+    letter-spacing: 0.25px;
+}
+
+#page-title{
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.25px;
+}
+
+#post-description{
+    font-size: 15px;
+    letter-spacing: 0.25px;
+}
+
+.view-comments{
+    color: rgb(143, 143, 143);
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 0.25px;
+}
+
+#post-comments{
+    font-size: 14px;
+}
+
+.write-comment, .write-comment:focus{
+    border: none;
+    padding: 8px 0px;
+    outline: none;
+    font-size: 14px;
+}

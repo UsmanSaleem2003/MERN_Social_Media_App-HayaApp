@@ -1,21 +1,28 @@
 import './App.css';
 import Home from "./Pages/Home/Home";
 import Sidebar from "./Components/Sidebar/Sidebar";
+import Messages from "./Pages/Messages/Messages";
+import Search from "./Pages/Search/Search";
+import Create from "./Pages/Create/Create";
+import Notifications from "./Pages/Notifications/Notifications";
+import Profile from "./Pages/Profile/Profile";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
     <BrowserRouter>
-      <div>
+      <div className='app-container'>
         <Sidebar />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/search' element={<Home />} />
-          <Route path='/messages' element={<Home />} />
-          <Route path='/notifications' element={<Home />} />
-          <Route path='/create' element={<Home />} />
-          <Route path='/profile' element={<Home />} />
-        </Routes>
+        <div className='routess'>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/search' element={<Search />} />
+            <Route path='/messages' element={<Messages />} />
+            <Route path='/notifications' element={<Notifications />} />
+            <Route path='/create' element={<Create />} />
+            <Route path='/profile' element={<Profile />} />
+          </Routes>
+        </div>
       </div>
     </BrowserRouter>
   );

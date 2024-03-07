@@ -12,14 +12,14 @@ export default function Sidebar() {
     return (
         <div className='sidebar'>
             <div className='logo'>
-                Haya
+                <Link to={"/"}><span className='logo_span'>HayaApp</span></Link>
             </div>
 
             <div className='sidebar-btns'>
                 <Link to={"/"}><img src={home_icon} alt='home_icon' /><span>Home</span></Link>
                 <Link to={"/search"}><img src={search_icon} alt='search_icon' /><span>Search</span></Link>
-                <Link to={"/message"}><img src={message_icon} alt='message_icon' /><span>Messages</span></Link>
-                <Link to={"/notification"}><img src={notification_icon} alt='notification_icon' /><span>Notifications</span></Link>
+                <Link to={"/messages"}><img src={message_icon} alt='message_icon' /><span>Messages</span></Link>
+                <Link to={"/notifications"}><img src={notification_icon} alt='notification_icon' /><span>Notifications</span></Link>
                 <Link to={"/create"}><img src={create_icon} alt='create_icon' /><span>Create</span></Link>
                 <Link to={"/profile"}><img src={profile_icon} alt='profile_icon' /><span>Profile</span></Link>
             </div>
