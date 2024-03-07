@@ -123,6 +123,13 @@
     letter-spacing: 0.25px;
 }
 
+#comment-page-title{
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.25px;
+}
+
 #post-description{
     font-size: 15px;
     letter-spacing: 0.25px;

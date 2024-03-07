@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import "./Post.css";
 import mypic from "../assets/mypic.jpg";
 import khan from "../assets/khan.jpg";
 import like_btn from "../assets/like_btn.png";
 import comment_btn from "../assets/comment_btn.png";
-
+import { PostsDataContext } from '../../Context/PostDataContextProvider';
 
 export default function Post() {
+
+    const PostsData = useContext(PostsDataContext);
+
     const [showMenu, setShowMenu] = useState(false);
 
     const handleMenuClick = () => {
@@ -99,7 +102,8 @@ export default function Post() {
                 <span className='view-comments'>View all 418 comments</span>
 
                 <div className='commments'>
-                    <span id='page-title'>(page-title)</span><span id='post-comments'> (comment description jdjbf jsnf ndjfknjksn f)</span>
+                    <span id='comment-page-title'>(page-title)</span>
+                    <span id='post-comments'> (comment description jdjbf jsnf ndjfknjksn f)</span>
                 </div>
 
                 <input className='write-comment' type='text' placeholder='Write a comment...' />
