@@ -1,14 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./Post.css";
-import mypic from "../assets/mypic.jpg";
 import khan from "../assets/khan.jpg";
 import like_btn from "../assets/like_btn.png";
 import comment_btn from "../assets/comment_btn.png";
-import { PostsDataContext } from '../../Context/PostDataContextProvider';
 
-export default function Post() {
-
-    const PostsData = useContext(PostsDataContext);
+export default function Post({ post }) {
 
     const [showMenu, setShowMenu] = useState(false);
 
@@ -53,20 +49,18 @@ export default function Post() {
     }, []);
 
 
-
-
-
     return (
         <div className='post'>
 
             <div className='head'>
-                <img src={khan} alt='page_logo' className='page-logo-img' />
+
+                <img src={post.page_logo} alt='page_logo' className='page-logo-img' />
 
                 <div className='head-titles'>
                     {/* make page title span tag as link */}
-                    <span className='page-title'>Page Title or Username </span>
+                    <span className='page-title'>{post.page_title}</span>
                     <span className='dot'> . </span>
-                    <span className='time-ago'> Time Ago</span>
+                    <span className='time-ago'> {post.time_ago}</span>
                 </div>
 
                 <div className='menu-button' id='menu-button' onClick={handleMenuClick}>
@@ -78,13 +72,13 @@ export default function Post() {
                         <div onClick={() => handleOptionClick('delete')}>Don't Show</div>
                         <div onClick={() => handleOptionClick('report')}><span className='report'>Report</span> </div>
                         <div onClick={() => handleOptionClick('cancel')}>Cancel</div>
-                        {/* Add more options as needed */}
                     </div>
                 )}
             </div>
 
             <div className='content-pic'>
-                <img src={khan} alt='content-pic' />
+                <img src={post.content_pic} alt='content-pic' />
+                {/* <img src={khan} alt='content-pic' /> */}
             </div>
 
             <div className='bottom'>
@@ -93,24 +87,27 @@ export default function Post() {
                     <img src={comment_btn} alt='comment_btn' />
                 </div>
 
-                <span className='likes'>987,165 likes</span>
+                <span className='likes'>{post.number_of_likes} likes</span>
 
                 <div className='description'>
-                    <span id='page-title'>(page-title)</span><span id='post-description'> (description description description) </span>
+                    <span id='page-title'>{post.page_title}</span><span id='post-description'> {post.post_description} </span>
                 </div>
 
-                <span className='view-comments'>View all 418 comments</span>
+                <span className='view-comments'>View all {post.number_of_comments} comments</span>
 
-                <div className='commments'>
-                    <span id='comment-page-title'>(page-title)</span>
-                    <span id='post-comments'> (comment description jdjbf jsnf ndjfknjksn f)</span>
+                <div className='comments'>
+                    {post.post_comments.map(comment => (
+                        <div key={comment.id} className='comment'>
+                            <span id='comment-page-title'>{comment['comment-page-title']}</span>
+                            <span id='post-comment'> {comment.comment} </span>
+                        </div>
+                    ))}
                 </div>
 
                 <input className='write-comment' type='text' placeholder='Write a comment...' />
+
             </div>
-
             <hr />
-
         </div>
     );
 }

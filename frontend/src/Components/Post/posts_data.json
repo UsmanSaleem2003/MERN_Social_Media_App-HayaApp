@@ -1,11 +1,11 @@
 [
     {
         "id": "1",
-        "page_logo": "../assets/page_logo/poetry_logo.jpg",
+        "page_logo": "/assets/page_logo/poetry_logo.jpg",
         "page_title": "Poetry_Page",
         "time_ago" : "20 mins",
-        "content_pic" : "../assets/content_pic/poetry_content.jpg",
-        "number_of_likes" : "1034",
+        "content_pic" : "/assets/content_pic/poetry_content.jpg",
+        "number_of_likes" : "1,034",
         "post_description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         "number_of_comments" : "34",
         "post_comments" : [
@@ -30,11 +30,11 @@
 
     {
         "id": "2",
-        "page_logo": "../assets/page_logo/animal_logo.png",
+        "page_logo": "/assets/page_logo/animal_logo.png",
         "page_title": "Animal_Page",
         "time_ago" : "1 week",
-        "content_pic" : "../assets/content_pic/poetry_content.jpg",
-        "number_of_likes" : "1936",
+        "content_pic" : "/assets/content_pic/animal_content.jpg",
+        "number_of_likes" : "1,936",
         "post_description" : "viverra vitae congue eu consequat ac felis donec. Nisl condimentum id venenatis a condimentum vitae sapien pellentesque. Proin fermentum.",
         "number_of_comments" : "114",
         "post_comments" : [
@@ -59,10 +59,10 @@
 
     {
         "id": "3",
-        "page_logo": "../assets/page_logo/female_logo.png",
+        "page_logo": "/assets/page_logo/female_logo.png",
         "page_title": "Laiba_12..",
         "time_ago" : "2 years",
-        "content_pic" : "../assets/content_pic/poetry_content.jpg",
+        "content_pic" : "/assets/content_pic/poetry_content.jpg",
         "number_of_likes" : "19",
         "post_description" : "Eu feugiat pretium nibh ipsum consequat.",
         "number_of_comments" : "4",
@@ -88,10 +88,10 @@
 
     {
         "id": "4",
-        "page_logo": "../assets/page_logo/male_logo.png",
+        "page_logo": "/assets/page_logo/male_logo.png",
         "page_title": "HarryMax",
         "time_ago" : "1 day",
-        "content_pic" : "../assets/content_pic/poetry_content.jpg",
+        "content_pic" : "/assets/content_pic/poetry_content.jpg",
         "number_of_likes" : "110",
         "post_description" : "eque vitae tempus quam pellentesque nec. Sit amet consectetur",
         "number_of_comments" : "24",
@@ -117,10 +117,10 @@
 
     {
         "id": "5",
-        "page_logo": "../assets/page_logo/music_logo.jpg",
+        "page_logo": "/assets/page_logo/music_logo.jpg",
         "page_title": "MusicPage",
         "time_ago" : "5 years",
-        "content_pic" : "../assets/content_pic/poetry_content.jpg",
+        "content_pic" : "/assets/content_pic/poetry_content.jpg",
         "number_of_likes" : "120,129",
         "post_description" : "eo vel orci porta non pulvinar neque laoreet. Elementum integer enim neque volutpat ac tincidunt vitae.",
         "number_of_comments" : "508",

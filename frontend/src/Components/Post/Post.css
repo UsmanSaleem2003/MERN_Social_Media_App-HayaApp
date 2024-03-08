@@ -26,10 +26,19 @@
     gap: 5px;
 }
 
+.page-title{
+    font-weight: 600;
+}
+
 .dot{
     color: rgb(163, 154, 154);
     font-size: 16px;
     font-weight: 700;
+}
+
+.time-ago{
+    color: rgb(180, 180, 180);
+    font-weight: 500;
 }
 
 .menu-button{
@@ -118,7 +127,7 @@
 
 #page-title{
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     letter-spacing: 0.25px;
 }
@@ -131,7 +140,7 @@
 }
 
 #post-description{
-    font-size: 15px;
+    font-size: 14px;
     letter-spacing: 0.25px;
 }
 
