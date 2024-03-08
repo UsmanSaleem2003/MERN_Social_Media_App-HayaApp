@@ -92,6 +92,7 @@
     height: 650px;
     display: block;
     border-radius: 3px;
+    object-fit: cover;
 }
 
 .bottom{

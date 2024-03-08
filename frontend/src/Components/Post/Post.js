@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import "./Post.css";
-import khan from "../assets/khan.jpg";
 import like_btn from "../assets/like_btn.png";
 import comment_btn from "../assets/comment_btn.png";
 
@@ -78,7 +77,6 @@ export default function Post({ post }) {
 
             <div className='content-pic'>
                 <img src={post.content_pic} alt='content-pic' />
-                {/* <img src={khan} alt='content-pic' /> */}
             </div>
 
             <div className='bottom'>
