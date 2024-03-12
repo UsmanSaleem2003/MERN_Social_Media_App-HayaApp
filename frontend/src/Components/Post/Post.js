@@ -105,7 +105,7 @@ export default function Post({ post }) {
                 <input className='write-comment' type='text' placeholder='Write a comment...' />
 
             </div>
-            <hr />
+            <hr className='post-line' />
         </div>
     );
 }

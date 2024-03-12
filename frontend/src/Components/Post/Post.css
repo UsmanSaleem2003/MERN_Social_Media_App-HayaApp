@@ -2,6 +2,7 @@
     box-sizing: border-box;
     width: 480px;
     position: relative;
+    /* margin-top: 10px; */
 }
 
 .head{
@@ -48,7 +49,8 @@
 }
 
 .menu-btn{
-    background-color: white;
+    /* background-color: white; */
+    background-color: inherit;
     border: none;
     color: black;
     display: flex;
@@ -161,4 +163,17 @@
     padding: 8px 0px;
     outline: none;
     font-size: 14px;
+    background-color: inherit;
 }
+
+.post-line{
+    margin: 20px 0px;
+}
+
+
+/* video{
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        max-width: 100%;
+ } */

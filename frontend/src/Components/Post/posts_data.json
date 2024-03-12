@@ -2,7 +2,7 @@
     {
         "id": "1",
         "page_logo": "/assets/page_logo/poetry_logo.jpg",
-        "page_title": "Poetry_Page",
+        "page_title": "Poetry_Page",    
         "time_ago" : "20 mins",
         "content_pic" : "/assets/content_pic/poetry_content.jpg",
         "number_of_likes" : "1,034",
