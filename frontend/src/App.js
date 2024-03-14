@@ -7,6 +7,7 @@ import Create from "./Pages/Create/Create";
 import Notifications from "./Pages/Notifications/Notifications";
 import Profile from "./Pages/Profile/Profile";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import EditProfile from './Pages/EditProfile/EditProfile';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path='/notifications' element={<Notifications />} />
             <Route path='/create' element={<Create />} />
             <Route path='/profile' element={<Profile />} />
+            <Route path='/editprofile' element={<EditProfile />} />
           </Routes>
         </div>
       </div>
