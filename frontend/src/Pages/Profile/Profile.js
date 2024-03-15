@@ -30,29 +30,12 @@ export default function Profile() {
 
             <hr />
             <div className='posts-grid'>
-                <div className="post-item">
-                    <img src={khan} alt='post-pic' />
-                    <div className="overlay-text">Text Here</div>
-                </div>
-                <div className="post-item">
-                    <img src={khan} alt='post-pic' />
-                    <div className="overlay-text">Text Here</div>
-                </div>
-                <div className="post-item">
-                    <img src={khan} alt='post-pic' />
-                    <div className="overlay-text">Text Here</div>
-                </div>
-                <div className="post-item">
-                    <img src={khan} alt='post-pic' />
-                    <div className="overlay-text">Text Here</div>
-                </div>
-                <div className="post-item">
-                    <img src={khan} alt='post-pic' />
-                    <div className="overlay-text">Text Here</div>
-                </div>
-                {/* Add more items as needed */}
+                <img src={khan} alt='post-pic' />
+                <img src={khan} alt='post-pic' />
+                <img src={khan} alt='post-pic' />
+                <img src={khan} alt='post-pic' />
+                <img src={khan} alt='post-pic' />
             </div>
-
         </div >
     )
 }
