@@ -1,0 +1,78 @@
+.notifications{
+    margin: 30px auto;
+    height: 540px;
+    width: 800px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(243, 243, 243);
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.previous-searches-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 20px;
+    border-bottom: 1px solid #030303;
+}
+
+.previous-searches-heading {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.clear-searches {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.clear-searches:hover {
+    text-decoration: underline;
+}
+
+.previous-notification {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #cecece;
+}
+
+.previous-notification span{
+    padding-left: 20px;
+    font-weight: 600;
+}
+
+.previous-notification span > span {
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.previous-notification:hover{
+    background-color: #e2e2e2;
+    cursor: pointer;
+}
+
+.previous-notification:last-child {
+    border-bottom: none; /* Remove border bottom for the last search */
+}
+
+.cross-icon {
+    margin-left: auto;
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+}
+
+.cross-btn{
+    margin-left: auto;
+    border: none;
+}
+
+.notification-profile-pic{
+    width: 50px;
+    height: 50px;
+    border-radius: 100px;
+    object-fit: cover;
+}

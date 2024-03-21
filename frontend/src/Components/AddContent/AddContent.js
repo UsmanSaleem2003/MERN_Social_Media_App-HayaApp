@@ -1,16 +1,21 @@
 import React, { useState, useRef } from 'react';
 import "./AddContent.css";
-import khan from "../assets/khan.jpg";
 import Webcam from "react-webcam";
 
 export default function AddContent() {
     const [webcam, setWebcam] = useState(false); // to check whether to open camera or not
-    const [capturedImage, setCapturedImage] = useState(null); // to store the clicked image
+    const [capturedImage, setCapturedImage] = useState(false); // to store the clicked image
     const webRef = useRef(null);
 
-    const showImage = async () => {
+
+    function imageClicked() {
+        setCapturedImage(true);
+    }
+
+
+    const downloadImage = async () => {
         const imgUrl = webRef.current.getScreenshot();
-        setCapturedImage(imgUrl);
+        // setCapturedImage(imgUrl);
 
         // Convert base64 to Blob
         fetch(imgUrl)
@@ -43,12 +48,16 @@ export default function AddContent() {
     return (
         <div className='AddContent'>
 
-            {webcam ? <Webcam imageSmoothing={true} ref={webRef} /> : null}
 
             <div className='addContent-buttons'>
-                {webcam ? <button onClick={() => setWebcam(false)}> Close Webcam </button> : <button onClick={() => setWebcam(true)}>Open Camera</button>}
-                <button onClick={showImage}>Click Image</button>
+                {webcam ? <button className='webcam-btn' onClick={() => setWebcam(false)}> Close WebCam </button> : <button className='webcam-btn' onClick={() => setWebcam(true)}>Open WebCam</button>}
+                {webcam ? <button className='clickImage-btn' onClick={imageClicked}>Click Image</button> : <button className='clickImage-btn' onClick={imageClicked} disabled>Click Image</button>}
+                {capturedImage ? <button className='downloadImg-btn' onClick={downloadImage}>Download Image</button> : <button className='clickImage-btn' onClick={downloadImage} disabled>Download Image</button>}
                 {/* {capturedImage ? <img src={capturedImage} alt='' /> : <p>No Image Captured</p>} */}
+            </div>
+
+            <div className='webcam-pic'>
+                {webcam ? <Webcam imageSmoothing={true} ref={webRef} mirrored={true} /> : null}
             </div>
         </div>
     );

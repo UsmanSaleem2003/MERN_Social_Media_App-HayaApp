@@ -80,6 +80,44 @@ export default function Search() {
                         <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
                     </div>
 
+                    {/* all below are dummy searches */}
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Memes</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Harry</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Memes</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Harry</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Memes</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Harry</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Memes</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Harry</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Memes</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
+
                 </div>
 
             </div>
