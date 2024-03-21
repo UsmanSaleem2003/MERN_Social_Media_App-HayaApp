@@ -32,11 +32,12 @@ export default function Search() {
 
 
     return (
-        <div>
-            <div className='search-header'>
+        <div className='search-page'>
+            <div className='search-content'>
+
                 <div className='search-input'>
                     <input type='text' onChange={handleInputChange} placeholder="Enter Account's Username" />
-                    <img src={search_icon} alt='search-icon' className='search-icon' onClick={performSearch} />
+                    <button type='submit' onClick={performSearch} className='search-btn'> <img src={search_icon} className='search-icon' /> </button>
                 </div>
 
                 {/* add functionality of filters for search */}
