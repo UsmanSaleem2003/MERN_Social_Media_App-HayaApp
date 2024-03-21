@@ -1,4 +1,4 @@
-import React from 'react';
+import './App.css';
 import Home from "./Pages/Home/Home";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import Messages from "./Pages/Messages/Messages";

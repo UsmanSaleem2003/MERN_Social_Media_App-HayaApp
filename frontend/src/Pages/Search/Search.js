@@ -73,6 +73,8 @@ export default function Search() {
                         <span className='previous-searches-heading'>Previous Searches</span>
                         <span className='clear-searches'>Clear All</span>
                     </div>
+
+                    {/* get previous searches from user's schema and map them here */}
                     <div className="previous-search">
                         <span onClick={handlePreviousSearch}>Harry</span>
                         <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
