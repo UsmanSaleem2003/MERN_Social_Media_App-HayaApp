@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import search_icon from "../../Components/assets/search_icon.png";
+import cross_icon from "../../Components/assets/cross_icon.png";
 import "./Search.css";
 
 export default function Search() {
@@ -18,6 +19,11 @@ export default function Search() {
 
     function handleAccountType(e) {
         setAccountType(e.target.value);
+    }
+
+    function handlePreviousSearch(e) {
+        const previousSearchText = e.target.textContent; // Extracting the text content of the clicked span
+        setsearchText(previousSearchText);
     }
 
     function performSearch() {
@@ -63,12 +69,17 @@ export default function Search() {
                 </div>
 
                 <div className='previous-searches'>
-                    <p>Previous Searches</p>
-                    <p>Harry</p>
-                    <p>Fan</p>
-                    <p>Memes</p>
+                    <div className='previous-searches-header'>
+                        <span className='previous-searches-heading'>Previous Searches</span>
+                        <span className='clear-searches'>Clear All</span>
+                    </div>
+                    <div className="previous-search">
+                        <span onClick={handlePreviousSearch}>Harry</span>
+                        <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                    </div>
 
                 </div>
+
             </div>
         </div>
     )

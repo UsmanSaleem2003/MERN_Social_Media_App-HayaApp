@@ -3,19 +3,20 @@
     align-items: center;
     justify-content: center;
     margin: 50px auto;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .search-content{
-    margin-top: 10px;
+    box-sizing: border-box;
+    width: 600px;
+    /* border: 1px solid black; */
 }
 
 .search-input {
     display: flex;
     align-items: center;
-    width: 500px;
     height: 40px;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .search-input input {
@@ -27,6 +28,10 @@
     border-bottom-left-radius: 30px;
     border: 0.5px solid rgb(206, 206, 206);
     border-right: none;
+}
+
+.search-input input:focus{
+    outline: none;
 }
 
 .search-icon {
@@ -43,6 +48,140 @@
     cursor: pointer;
 }
 
+.search-btn:focus{
+    outline: none;
+}
+
 .filters{
-    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+    padding-left: 30px;
+}
+
+.filters span{
+    font-weight: 600;
+    font-size: large;
+}
+
+.filters label{
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 15px;
+}
+
+.filters select {
+    text-align: center;
+    height: 35px;
+    width: 120px;
+    border-radius: 30px;
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid rgb(206, 206, 206);
+    padding: 5px 15px;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.filters select:hover {
+    background-color: #f5f5f5;
+}
+
+.filters select:focus{
+    background-color: #f5f5f5;
+}
+
+.filters select option:checked {
+    background-color: #e2e2e2;
+    color: black;
+}
+
+/* Style other options */
+.filters select option {
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 14px;
+    width: 150px;
+}
+
+.filters select::-ms-expand {
+    display: none;
+}
+
+.filters select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+
+.previous-searches {
+    margin-top: 30px;
+    height: 500px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(243, 243, 243);
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.previous-searches-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 20px;
+    border-bottom: 1px solid #030303; /* Add border bottom */
+}
+
+.previous-searches-heading {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.clear-searches {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.clear-searches:hover {
+    text-decoration: underline;
+}
+
+.previous-search {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #cecece; /* Add border bottom */
+}
+
+.previous-search:hover{
+    background-color: #e2e2e2;
+    cursor: pointer;
+}
+
+.previous-search:last-child {
+    border-bottom: none; /* Remove border bottom for the last search */
+}
+
+.cross-icon {
+    margin-left: auto;
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+}
+
+.cross-btn{
+    margin-left: auto;
+    border: none;
+}
+
+.cross-icon:hover {
+    color: red; /* Change color on hover */
 }
