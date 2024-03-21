@@ -22,7 +22,7 @@ export default function Search() {
     }
 
     function handlePreviousSearch(e) {
-        const previousSearchText = e.target.textContent; // Extracting the text content of the clicked span
+        const previousSearchText = e.target.textContent;
         setsearchText(previousSearchText);
     }
 
@@ -43,7 +43,7 @@ export default function Search() {
 
                 <div className='search-input'>
                     <input type='text' onChange={handleInputChange} placeholder="Enter Account's Username" />
-                    <button type='submit' onClick={performSearch} className='search-btn'> <img src={search_icon} className='search-icon' /> </button>
+                    <button type='submit' onClick={performSearch} className='search-btn'> <img src={search_icon} className='search-icon' alt='search-icon' /> </button>
                 </div>
 
                 {/* add functionality of filters for search */}

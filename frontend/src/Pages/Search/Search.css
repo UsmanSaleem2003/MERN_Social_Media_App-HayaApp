@@ -21,7 +21,7 @@
 
 .search-input input {
     flex: 1;
-    height: 50px;
+    height: 45px;
     padding: 5px 25px;
     font-size: 16px;
     border-top-left-radius: 30px;
@@ -35,12 +35,12 @@
 }
 
 .search-icon {
-    padding: 0 10px;
+    padding: auto 10px;
     height: 30px;
 }
 
 .search-btn{
-    height: 50px;
+    height: 57px;
     width: 90px;
     border: 0.5px solid rgb(206, 206, 206);
     border-top-right-radius: 30px;
@@ -137,7 +137,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 25px 20px;
-    border-bottom: 1px solid #030303; /* Add border bottom */
+    border-bottom: 1px solid #030303;
 }
 
 .previous-searches-heading {
