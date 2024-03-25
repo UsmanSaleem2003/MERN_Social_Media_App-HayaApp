@@ -1,16 +1,18 @@
 .AddContent{
     margin-top: 40px;
-    height: 490px;
     width: auto;
     margin-bottom: 40px;
     border-radius: 10px;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.camera-contents{
+    display: flex;
     flex-direction: row;
     align-items: center;
-    /* border: 1px solid black; */
-    /* background-color: rgb(209, 209, 209); */
-    /* background-color: rgb(218, 218, 218); */
-    /* box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px; */
+    height: 490px;
 }
 
 .lower-part{
@@ -45,21 +47,67 @@
 }
 
 .webcam-btn, .clickImage-btn, .downloadImg-btn{
-    width: 160px;
+    width: 150px;
     height: 60px;
+    font-size: 17px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 10px;
-    border: 1px solid #cecece;
+    background-color: rgb(226, 226, 226);
     cursor: pointer;
-    font-size: 15.5px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
 }
 
 .webcam-btn:hover, .clickImage-btn:hover, .downloadImg-btn:hover{
-    background-color: #dfdfdf;
+    transition: 0.5s ease-in-out;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    
 }
 
 .webcam-pic{
     margin-left: 100px;
     border-radius: 20px;
+}
+
+.post-inputs{
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    align-items: center;
+    /* background-color: rgb(226, 226, 226); */
+    border: 1px solid;
+    
+}
+
+.post-inputs span{
+    font-size: x-large;
+    font-weight: 600;
+    color: rgb(127, 39, 209);
+    margin-bottom: 40px;
+}
+
+.Preview-post-contents{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.clicked-img{
+    width: 250px;
+    height: 200px;
+    object-fit: cover;
+    margin-right: 30px;
+}
+
+textarea{
+    width: 500px;
+    height: 100px;
+    resize: none;
+    font-size: large;
+    border: 1px solid grey;
+}
+
+textarea:focus{
+    outline: none;
 }

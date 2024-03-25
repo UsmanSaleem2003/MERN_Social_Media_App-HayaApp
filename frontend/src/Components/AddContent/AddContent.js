@@ -5,17 +5,17 @@ import Webcam from "react-webcam";
 export default function AddContent() {
     const [webcam, setWebcam] = useState(false); // to check whether to open camera or not
     const [capturedImage, setCapturedImage] = useState(false); // to store the clicked image
+    const [imgURL, setImgURL] = useState("");
     const webRef = useRef(null);
 
 
-    function imageClicked() {
-        setCapturedImage(true);
+    const ClickImaged = async () => {
+        setCapturedImage(!capturedImage);
+        setImgURL(webRef.current.getScreenshot());
     }
-
 
     const downloadImage = async () => {
         const imgUrl = webRef.current.getScreenshot();
-        // setCapturedImage(imgUrl);
 
         // Convert base64 to Blob
         fetch(imgUrl)
@@ -49,15 +49,36 @@ export default function AddContent() {
         <div className='AddContent'>
 
 
-            <div className='addContent-buttons'>
-                {webcam ? <button className='webcam-btn' onClick={() => setWebcam(false)}> Close WebCam </button> : <button className='webcam-btn' onClick={() => setWebcam(true)}>Open WebCam</button>}
-                {webcam ? <button className='clickImage-btn' onClick={imageClicked}>Click Image</button> : <button className='clickImage-btn' onClick={imageClicked} disabled>Click Image</button>}
-                {capturedImage ? <button className='downloadImg-btn' onClick={downloadImage}>Download Image</button> : <button className='clickImage-btn' onClick={downloadImage} disabled>Download Image</button>}
-                {/* {capturedImage ? <img src={capturedImage} alt='' /> : <p>No Image Captured</p>} */}
+            <div className='camera-contents'>
+
+                <div className='addContent-buttons'>
+                    {webcam ? <button className='webcam-btn' onClick={() => setWebcam(false)}> Close WebCam </button> : <button className='webcam-btn' onClick={() => setWebcam(true)}>Open WebCam</button>}
+                    {/* {webcam ?  <button className='clickImage-btn' onClick={ClickImaged}>Click Image</button> : <button className='clickImage-btn' onClick={ClickImaged} disabled>Click Image</button>} */}
+                    {webcam ? capturedImage ? <button className='clickImage-btn' onClick={ClickImaged}>Back</button> : <button className='clickImage-btn' onClick={ClickImaged} >Click Image</button> : <button className='clickImage-btn' onClick={ClickImaged} disabled>Click Image</button>}
+                    {capturedImage ? webcam ? <button className='downloadImg-btn' onClick={downloadImage}>Download Image</button> : <button className='clickImage-btn' onClick={downloadImage} disabled>Download Image</button> : <button className='clickImage-btn' onClick={downloadImage} disabled>Download Image</button>}
+                </div>
+
+                <div className='webcam-pic'>
+                    {webcam ? <Webcam imageSmoothing={true} ref={webRef} mirrored={true} /> : null}
+                </div>
             </div>
 
-            <div className='webcam-pic'>
-                {webcam ? <Webcam imageSmoothing={true} ref={webRef} mirrored={true} /> : null}
+            <hr />
+
+            <div className='post-inputs'>
+
+                <span>Preview Post</span>
+
+                <div className='Preview-post-contents'>
+
+                    <div className='preview-image'>
+                        {capturedImage ? <img src={imgURL} alt='clickedimg' className='clicked-img' /> : null}
+                    </div>
+
+                    <div className='picture-data'>
+                        <textarea maxLength={10} placeholder='Add Description of limited 200 characters' />
+                    </div>
+                </div>
             </div>
         </div>
     );

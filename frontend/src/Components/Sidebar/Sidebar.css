@@ -10,6 +10,10 @@
     border-right: 1px solid rgb(182, 182, 182);
     overflow: hidden;
 }
+.sidebar:hover{
+    transition: 0.75s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
 
 .logo{
     font-size: xx-large;
