@@ -6,6 +6,7 @@ import Search from "./Pages/Search/Search";
 import Create from "./Pages/Create/Create";
 import Notifications from "./Pages/Notifications/Notifications";
 import Profile from "./Pages/Profile/Profile";
+import Login from "./Pages/Login/Login";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import EditProfile from './Pages/EditProfile/EditProfile';
 
@@ -16,7 +17,8 @@ function App() {
         <Sidebar />
         <div className='routess'>
           <Routes>
-            <Route path='/' element={<Home />} />
+            <Route path='/' element={<Login />} />
+            <Route path='/Home' element={<Home />} />
             <Route path='/search' element={<Search />} />
             <Route path='/messages' element={<Messages />} />
             <Route path='/notifications' element={<Notifications />} />

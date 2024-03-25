@@ -6,8 +6,12 @@ export default function AddContent() {
     const [webcam, setWebcam] = useState(false); // to check whether to open camera or not
     const [capturedImage, setCapturedImage] = useState(false); // to store the clicked image
     const [imgURL, setImgURL] = useState("");
+    const [uploaded, setuploaded] = useState(false);
     const webRef = useRef(null);
 
+    const handleupload = async () => {
+        setuploaded(true);
+    }
 
     const ClickImaged = async () => {
         setCapturedImage(!capturedImage);
@@ -72,11 +76,14 @@ export default function AddContent() {
                 <div className='Preview-post-contents'>
 
                     <div className='preview-image'>
-                        {capturedImage ? <img src={imgURL} alt='clickedimg' className='clicked-img' /> : null}
+                        {capturedImage ? <img src={imgURL} alt='clickedimg' className='clicked-img' /> : <div className='null-div'>Image To be Previewed</div>}
                     </div>
 
                     <div className='picture-data'>
-                        <textarea maxLength={10} placeholder='Add Description of limited 200 characters' />
+                        <span>Add Description</span>
+                        <textarea maxLength={200} placeholder='Add Description of limited 200 characters' />
+
+                        {capturedImage ? <button onClick={handleupload} className='upload'>Upload</button> : <button className='upload' onClick={handleupload} disabled>Upload</button>}
                     </div>
                 </div>
             </div>
