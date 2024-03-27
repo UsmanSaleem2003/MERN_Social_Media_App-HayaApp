@@ -49,6 +49,11 @@
     margin-top: 20px;
 }
 
+.sidebar-btns a:focus{
+    outline:none;
+    background-color: rgb(231, 231, 231);
+}
+
 .sidebar-btns a:hover{
     background-color: rgb(231, 231, 231);
     border-radius: 10px;

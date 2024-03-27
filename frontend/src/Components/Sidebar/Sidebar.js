@@ -12,11 +12,11 @@ export default function Sidebar() {
     return (
         <div className='sidebar'>
             <div className='logo'>
-                <Link to={"/Home"}><span className='logo_span'>HayaApp</span></Link>
+                <Link to={"/"}><span className='logo_span'>HayaApp</span></Link>
             </div>
 
             <div className='sidebar-btns'>
-                <Link to={"/Home"}><img src={home_icon} alt='home_icon' /><span>Home</span></Link>
+                <Link to={"/"}><img src={home_icon} alt='home_icon' /><span>Home</span></Link>
                 <Link to={"/search"}><img src={search_icon} alt='search_icon' /><span>Search</span></Link>
                 <Link to={"/messages"}><img src={message_icon} alt='message_icon' /><span>Messages</span></Link>
                 <Link to={"/notifications"}><img src={notification_icon} alt='notification_icon' /><span>Notifications</span></Link>
