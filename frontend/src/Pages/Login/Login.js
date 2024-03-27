@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import "./Login.css";
 import haya_logo from "../../Components/assets/haya_logo.png";
+import google_logo from "../../Components/assets/google_icon.png"
 
 export default function Login({ onLogin }) {
     const [username, setUsername] = useState('');
@@ -56,7 +57,7 @@ export default function Login({ onLogin }) {
 
             <div className='right-part'>
                 <div className="login-form">
-                    <span>User Login</span>
+                    <span className='user-login-span'>User Login</span>
                     {/* Use controlled components for the input fields */}
                     <input
                         type="text"
@@ -78,10 +79,11 @@ export default function Login({ onLogin }) {
 
                     {/* Use onSubmit event handler for the form */}
                     <form onSubmit={handleSubmit}>
-                        <button type="submit" className='login-btn' disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+                        <button type="submit" name='simple-login' className='login-btn' disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+                        <button type="submit" name='google-login' className='login-btn-google' disabled={loading}>{loading ? 'Logging in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>Login with Google</span></div>}</button>
                     </form>
 
-                    <Link to="/signup">Create Account</Link >
+                    <p className='signup-account'>Don't have an Account? <Link to="/signup" className='signup-account-link'>Create Account</Link ></p>
                 </div>
             </div>
         </div>

@@ -49,24 +49,6 @@
     object-fit: cover;
 }
 
-.content button{
-    width: 130px;
-    height: 50px;
-    font-size: 17px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background-color: rgb(226, 226, 226);
-    cursor: pointer;
-}
-
-.content button:hover{
-    transition: 0.5s ease-in-out;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-}
-
 .logout-icon{
     height: 20px;
     padding: 0px 10px;
@@ -74,7 +56,7 @@
 
 .content a{
     display: flex;
-    gap: 10px;
+    gap: 5px;
     height: 50px;
     width: 130px;
     color: black;

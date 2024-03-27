@@ -21,7 +21,7 @@ export default function Profile() {
                     <div className='content-upper'>
                         <p className='profile-username'>usman.saleem.252</p>
                         <Link to={"/editprofile"}><img src={edit_icon} alt='edit_icon' className='edit-icon' /><span className='edit-text'>Edit Profile</span></Link>
-                        <button type='submit'><img src={logout_icon} alt='logout_icon' className='logout-icon' /><span className='edit-text'>Logout</span></button>
+                        <Link to={"/"}><img src={logout_icon} alt='logout_icon' className='logout-icon' /><span className='edit-text'>Logout</span></Link>
                     </div>
 
                     <div className='content-lower'>

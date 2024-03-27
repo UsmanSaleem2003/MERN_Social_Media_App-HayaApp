@@ -6,6 +6,7 @@ export default function AddContent() {
     const [webcam, setWebcam] = useState(false); // to check whether to open camera or not
     const [capturedImage, setCapturedImage] = useState(false); // to store the clicked image
     const [imgURL, setImgURL] = useState("");
+    const [description, setDescription] = useState("");
     const [uploaded, setuploaded] = useState(false);
     const webRef = useRef(null);
 
@@ -16,6 +17,16 @@ export default function AddContent() {
     const ClickImaged = async () => {
         setCapturedImage(!capturedImage);
         setImgURL(webRef.current.getScreenshot());
+    }
+
+    const handlePostCancel = async () => {
+        setCapturedImage(false);
+        setImgURL("");
+        setDescription("");
+    }
+
+    const handleTextAreaChange = async (e) => {
+        setDescription(e.target.value);
     }
 
     const downloadImage = async () => {
@@ -81,9 +92,10 @@ export default function AddContent() {
 
                     <div className='picture-data'>
                         <span>Add Description</span>
-                        <textarea maxLength={200} placeholder='Add Description of limited 200 characters' />
+                        <textarea onChange={handleTextAreaChange} maxLength={200} value={description} placeholder='Add Description of limited 200 characters' />
 
                         {capturedImage ? <button onClick={handleupload} className='upload'>Upload</button> : <button className='upload' onClick={handleupload} disabled>Upload</button>}
+                        {capturedImage ? <button onClick={handlePostCancel} className='upload'>Cancel</button> : <button className='upload' onClick={handleupload} disabled>Cancel</button>}
                     </div>
                 </div>
             </div>
