@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import haya_logo from "../../Components/assets/haya_logo.png";
+import { Link } from "react-router-dom";
 import "./Signup.css";
+import haya_logo from "../../Components/assets/haya_logo.png";
+import google_logo from "../../Components/assets/google_icon.png"
+import location_logo from "../../Components/assets/location_logo.png"
+import image_logo from "../../Components/assets/image_logo.png"
 
 export default function Signup() {
     const [fullName, setFullName] = useState("");
@@ -103,22 +107,10 @@ export default function Signup() {
                         </div>
                     </div>
 
-                    <div className='birthdate'>
-                        <label>Select Birthdate : </label>
-                        <input
-                            type='date'
-                            className='signup-birthdate-input-field'
-                            value={birthdate}
-                            name='birthdate'
-                            placeholder='Birthdate'
-                            onChange={(e) => setBirthdate(e.target.value)}
-                        />
-                    </div>
-
                     <div className='signup-selections'>
                         <label htmlFor="gender-selection">Select Gender : </label>
                         <select
-                            className='signup-input-field'
+                            className='signup-gender-input-field'
                             value={gender}
                             onChange={(e) => setGender(e.target.value)}
                         >
@@ -139,23 +131,51 @@ export default function Signup() {
                         </select>
                     </div>
 
-                    <button type="button" onClick={handleLocationAccess}>Allow Location Access for region Selection</button>
-                    <input
-                        type='text'
-                        className='signup-input-field'
-                        value={region}
-                        name='region'
-                        placeholder='Region'
-                        readOnly
-                    />
+                    <div className='birthdate'>
+                        <label>Select Birthdate : </label>
+                        <input
+                            type='date'
+                            className='signup-birthdate-input-field'
+                            value={birthdate}
+                            name='birthdate'
+                            placeholder='Birthdate'
+                            onChange={(e) => setBirthdate(e.target.value)}
+                        />
+                    </div>
 
-                    <input
-                        type='file'
-                        className='signup-input-field'
-                        accept='image/*'
-                        onChange={(e) => setProfilePicture(e.target.files[0])}
-                    />
-                    <button type="submit">Sign Up</button>
+                    <div className='signup-lower-part'>
+                        <div className='signup-location-part'>
+                            <button type="button" className='location-access' onClick={handleLocationAccess}> <img src={location_logo} alt='location_logo' className='location_logo' /> Allow Location Access </button>
+
+                            <input
+                                type='text'
+                                className='signup-input-field'
+                                value={region}
+                                name='region'
+                                placeholder='Region'
+                                readOnly
+                            />
+                        </div>
+
+                        <div className='image-upload-container'>
+                            <input
+                                type='file'
+                                className='signup-image-input-field'
+                                accept='image/*'
+                                onChange={(e) => setProfilePicture(e.target.files[0])}
+                            />
+                            {profilePicture ? (
+                                <img src={URL.createObjectURL(profilePicture)} alt='Profile' className='profile-preview' />
+                            ) : (
+                                <span className="choose-profile-text">Choose Profile Picture<img src={image_logo} alt='image-logo' className='image-logo' /></span>
+                            )}
+                        </div>
+                    </div>
+
+
+                    <button type="submit" className='signup-btn'>Sign Up</button>
+                    <button type="submit" name='google-login' className='signup-btn-google'><div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>Login with Google</span></div></button>
+                    <p className='login-account'>Already have an Account? <Link to="/" className='login-account-link'>Login</Link ></p>
                 </form>
             </div >
 
