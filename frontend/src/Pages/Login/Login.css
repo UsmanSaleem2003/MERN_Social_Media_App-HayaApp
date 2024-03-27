@@ -4,7 +4,7 @@
     width: 700px;
     height: 550px;
     box-sizing: border-box;
-    margin: 20px 150px;
+    margin: 20px auto;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
