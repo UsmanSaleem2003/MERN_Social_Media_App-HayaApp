@@ -6,15 +6,15 @@ import "./Search.css";
 export default function Search() {
 
     const [searchText, setsearchText] = useState("");
-    const [AccountCategory, setAccountCategory] = useState("None");
+    const [genderCategory, setgenderCategory] = useState("None");
     const [AccountType, setAccountType] = useState("None");
 
     function handleInputChange(e) {
         setsearchText(e.target.value);
     }
 
-    function handleAccountCategory(e) {
-        setAccountCategory(e.target.value);
+    function handleGenderFilter(e) {
+        setgenderCategory(e.target.value);
     }
 
     function handleAccountType(e) {
@@ -32,9 +32,9 @@ export default function Search() {
 
     useEffect(() => {
         console.log(searchText);
-        console.log(AccountCategory);
+        console.log(genderCategory);
         console.log(AccountType);
-    }, [searchText, AccountCategory, AccountType]);
+    }, [searchText, genderCategory, AccountType]);
 
 
     return (
@@ -50,13 +50,11 @@ export default function Search() {
                 <div className='filters'>
                     <span>Filters : </span>
 
-                    <label htmlFor="Account-Category">Account Category</label>
-                    <select name="Account-Category" id="Account-Category" onChange={handleAccountCategory}>
-                        <option value="None">None</option>
-                        <option value="Music">Music</option>
-                        <option value="Poetry">Poetry</option>
-                        <option value="Memes">Memes</option>
-                        <option value="News">News</option>
+                    <label htmlFor="gender-filter">Gender Filter</label>
+                    <select name="gender-filter" id="Gender-Category" onChange={handleGenderFilter}>
+                        <option value="none">None</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
                     </select>
 
                     <label htmlFor="Account-Type">Account Type</label>

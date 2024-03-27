@@ -8,6 +8,7 @@ export default function Login({ onLogin }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
@@ -58,7 +59,7 @@ export default function Login({ onLogin }) {
             <div className='right-part'>
                 <div className="login-form">
                     <span className='user-login-span'>User Login</span>
-                    {/* Use controlled components for the input fields */}
+
                     <input
                         type="text"
                         placeholder="Username"
@@ -67,17 +68,27 @@ export default function Login({ onLogin }) {
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Password"
                         className="input-field"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    {/* Display error message if login fails */}
+                    <div className='show-password'>
+                        <label className="show-password-checkbox">
+                            <input
+                                type="checkbox"
+                                checked={showPassword}
+                                onChange={() => setShowPassword(!showPassword)}
+                            />
+                            Show Password
+                        </label>
+                    </div>
+
+
                     {error && <div className="error-message">{error}</div>}
 
-                    {/* Use onSubmit event handler for the form */}
                     <form onSubmit={handleSubmit}>
                         <button type="submit" name='simple-login' className='login-btn' disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
                         <button type="submit" name='google-login' className='login-btn-google' disabled={loading}>{loading ? 'Logging in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>Login with Google</span></div>}</button>
