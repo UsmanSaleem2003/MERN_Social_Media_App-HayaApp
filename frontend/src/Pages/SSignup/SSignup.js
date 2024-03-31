@@ -85,6 +85,7 @@ export default function SSignup({ onsignup }) {
                         value={username}
                         name='username'
                         onChange={(e) => setUsername(e.target.value)}
+                        required
                     />
                     <input
                         type={showPassword ? "text" : "password"}
@@ -93,6 +94,7 @@ export default function SSignup({ onsignup }) {
                         value={password}
                         name='password'
                         onChange={(e) => setPassword(e.target.value)}
+                        required
                     />
 
                     <input
@@ -102,6 +104,7 @@ export default function SSignup({ onsignup }) {
                         name='confirmedPassword'
                         placeholder='Re-Enter Your Password'
                         onChange={(e) => setConfirmedPassword(e.target.value)}
+                        required
                     />
 
                     <div className='show-password'>
@@ -122,6 +125,7 @@ export default function SSignup({ onsignup }) {
                                 <select
                                     value={gender}
                                     onChange={(e) => setGender(e.target.value)}
+                                    required
                                 >
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
@@ -154,6 +158,7 @@ export default function SSignup({ onsignup }) {
                             name='birthdate'
                             placeholder='Birthdate'
                             onChange={(e) => setBirthdate(e.target.value)}
+                            required
                         />
                     </div>
 

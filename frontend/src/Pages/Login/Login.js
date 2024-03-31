@@ -66,13 +66,16 @@ export default function Login({ onLogin }) {
                         className="input-field"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        required
                     />
+
                     <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
                         className="input-field"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        required
                     />
 
                     <div className='show-password'>
