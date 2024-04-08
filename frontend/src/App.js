@@ -52,7 +52,8 @@ function App() {
   return (
     <BrowserRouter>
       <div className='app-container'>
-        {isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes handleLogin={handleLogin} />} {/* Pass handleLogin to UnauthenticatedRoutes */}
+        {/* {isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes handleLogin={handleLogin} />} Pass handleLogin to UnauthenticatedRoutes */}
+        <AuthenticatedRoutes />
       </div>
     </BrowserRouter>
   );

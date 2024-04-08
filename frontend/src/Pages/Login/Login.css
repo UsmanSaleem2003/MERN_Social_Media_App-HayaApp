@@ -79,7 +79,6 @@
     font-size: 16px;
     font-weight: 600;
     border-radius: 25px;
-    margin-left: 15px;
     cursor: pointer;
 }
 
@@ -128,17 +127,27 @@
 
 .google-btn{
     display: flex;
-
     align-items: center;
 }
 
 .show-password{
     font-size: small;
-    margin-left: -170px;
+    margin-left: 30px !important;
     margin-top: -10px;
+    width: fit-content;
+    margin-bottom: 5px;
 }
 .show-password input{
     width: 15px;
     height: 15px;
     margin-right: 10px;
+}
+
+.password-forgotten{
+    margin-left: 50px;
+    cursor: pointer;
+}
+
+.password-forgotten:hover{   
+    text-decoration: underline;
 }

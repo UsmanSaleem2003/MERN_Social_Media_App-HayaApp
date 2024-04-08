@@ -1,0 +1,30 @@
+.edit-profile-page{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+    margin: 50px auto;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.EditProfileForm{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.input-field {
+    margin-bottom: 10px;
+    padding: 10px 18px;
+    border-radius: 25px;
+    width: 90%;
+    height: 50px;
+    margin-left: 15px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.input-field:focus{
+    outline: 0.5px solid black;
+}

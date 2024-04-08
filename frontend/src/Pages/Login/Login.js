@@ -87,6 +87,8 @@ export default function Login({ onLogin }) {
                             />
                             Show Password
                         </label>
+
+                        <label className='password-forgotten'>Password Forgotten</label>
                     </div>
 
 

@@ -95,7 +95,8 @@ export default function AddContent() {
                         <textarea onChange={handleTextAreaChange} maxLength={200} value={description} placeholder='Add Description of limited 200 characters' />
 
                         {capturedImage ? <button onClick={handleupload} className='upload'>Upload</button> : <button className='upload' onClick={handleupload} disabled>Upload</button>}
-                        {capturedImage ? <button onClick={handlePostCancel} className='upload'>Cancel</button> : <button className='upload' onClick={handleupload} disabled>Cancel</button>}
+                        {/* {capturedImage ? <button onClick={handlePostCancel} className='upload'>Cancel</button> : <button className='upload' onClick={handleupload} disabled>Cancel</button>} */}
+                        <button onClick={handlePostCancel} className='upload'>Cancel</button>
                     </div>
                 </div>
             </div>
