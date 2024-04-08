@@ -52,7 +52,9 @@ function App() {
   return (
     <BrowserRouter>
       <div className='app-container'>
-        {/* {isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes handleLogin={handleLogin} />} Pass handleLogin to UnauthenticatedRoutes */}
+        {/* Pass handleLogin to UnauthenticatedRoutes */}
+        {/* {isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes handleLogin={handleLogin} />} */}
+        {/* ........ for frontend development without login/signup/logout.....for testing frontend APIs */}
         <AuthenticatedRoutes />
       </div>
     </BrowserRouter>

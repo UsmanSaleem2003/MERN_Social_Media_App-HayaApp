@@ -19,11 +19,13 @@ export default function EditProfile() {
 
     return (
         <div className='edit-profile-page'>
-            <p>EditProfile</p>
+            <p>Edit Profile</p>
+            <hr className='edit-profile-line' />
 
             <form className='EditProfileForm' onSubmit={handleSubmit} method='POST'>
 
                 <input
+                    className='edit-profile-input-field'
                     type='text'
                     value={fullName}
                     placeholder='Enter new Full Name'
@@ -33,6 +35,7 @@ export default function EditProfile() {
                 <br />
 
                 <input
+                    className='edit-profile-input-field'
                     type={showPassword ? "text" : "password"}
                     value={Password}
                     placeholder='Enter new Password'
@@ -42,6 +45,7 @@ export default function EditProfile() {
                 <br />
 
                 <input
+                    className='edit-profile-input-field'
                     type={showPassword ? "text" : "password"}
                     value={ConfirmPassword}
                     onChange={(e) => { setConfirmPassword(e.target.value) }}
@@ -65,6 +69,7 @@ export default function EditProfile() {
                 <label className='edit-profile-account-type-selection' htmlFor="account-type-selection">Select Account Type : </label>
                 <div className="select-container">
                     <select
+                        className='selection'
                         value={accountCategory}
                         onChange={(e) => setAccountCategory(e.target.value)}
                     >
@@ -101,6 +106,13 @@ export default function EditProfile() {
 
 
                 {error && <div className="error-message">{error}</div>}
+
+                <button
+                    className='update-button'
+                    onClick={handleSubmit}
+                >
+                    Update Profile
+                </button>
             </form>
 
         </div >

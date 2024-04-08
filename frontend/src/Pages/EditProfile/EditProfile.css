@@ -4,16 +4,32 @@
     align-items: center;
     width: 500px;
     margin: 50px auto;
+    border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: rgb(243, 243, 243);
+}
+
+.edit-profile-page > p {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: -20px;
+}
+
+.edit-profile-line{
+    width: 60%;
+    height: 5px;
+    background-color: rgb(94, 93, 93);   
 }
 
 .EditProfileForm{
     display: flex;
     align-items: center;
     flex-direction: column;
+    margin-top: 20px;
 }
 
-.input-field {
+.edit-profile-input-field {
     margin-bottom: 10px;
     padding: 10px 18px;
     border-radius: 25px;
@@ -25,6 +41,59 @@
     letter-spacing: 0.5px;
 }
 
-.input-field:focus{
+.edit-profile-input-field:focus{
     outline: 0.5px solid black;
+}
+
+.edit-page-show-password{
+    margin-left: -130px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.edit-profile-account-type-selection{
+    font-size: 16px;
+    margin-left: -110px;
+    margin-bottom: 10px;
+}
+
+.selection{
+    height: 50px;
+    width: 300px;
+    border-radius: 30px;
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid rgb(206, 206, 206);
+    padding: 5px 20px;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.update-button{
+    display: flex;
+    gap: 5px;
+    height: 50px;
+    width: 150px;
+    margin-bottom: 30px;
+    margin-left: 250px;
+    color: black;
+    padding: 4px 6px;
+    text-decoration: none;
+    font-size: 15px;
+    border: 1px solid rgb(156, 156, 156);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: rgb(206, 206, 206);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.update-button:hover{
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
