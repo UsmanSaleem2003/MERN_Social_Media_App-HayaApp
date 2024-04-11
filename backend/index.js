@@ -12,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '150mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -27,7 +28,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/SocialMediaDB")
 
 const postSchema = new mongoose.Schema({
     description: { type: String, default: "" },
-    image: String,
+    postCount: { type: Number, default: 0 },
     imageData: Buffer,
     NOL: { type: Number, default: "0" },
     NOC: { type: Number, default: "0" },
@@ -37,7 +38,19 @@ const postSchema = new mongoose.Schema({
     }]
 });
 
+//handle postCount incremental attribute
+postSchema.pre('save', async function (next) {
+    try {
+        // Increment postCount
+        this.postCount += 1;
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 const Post = mongoose.model("Post", postSchema);
+
 
 
 app.get("/", (req, res) => {
@@ -52,7 +65,6 @@ app.post("/upload", async (req, res) => {
 
         const newPost = new Post({
             description: req.body.description,
-            image: req.body.base64ImageData,
             imageData: new Binary(imageBuffer),
             CommentsList: []
         });
