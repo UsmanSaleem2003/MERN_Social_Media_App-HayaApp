@@ -10,7 +10,8 @@ const { Binary } = require('mongodb');
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+// app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '150mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -79,6 +80,16 @@ app.post("/upload", async (req, res) => {
         res.status(500).send("Error occurred while saving the image");
     }
 });
+
+
+app.get("/ProfilePostsList", async (req, res) => {
+    try {
+        const posts = await Post.find({});
+        res.status(200).send(posts);
+    } catch (e) {
+        res.status(400).send({ msg: e.message })
+    }
+})
 
 app.listen(4000, function () {
     console.log("Server is up and running on port 4000");
