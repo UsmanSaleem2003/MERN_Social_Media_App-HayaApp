@@ -27,32 +27,29 @@ mongoose.connect("mongodb://127.0.0.1:27017/SocialMediaDB")
         console.error("Error connecting to MongoDB:", error);
     });
 
+
+//mongodb schemas creation  
 const postSchema = new mongoose.Schema({
     description: { type: String, default: "" },
-    postCount: { type: Number, default: 0 },
     imageData: Buffer,
     NOL: { type: Number, default: "0" },
     NOC: { type: Number, default: "0" },
+    time: { type: Date, default: Date.now },
     CommentsList: [{
         commentby: { type: String, required: true },
         commentDescription: { type: String, required: true }
     }]
 });
 
-//handle postCount incremental attribute
-postSchema.pre('save', async function (next) {
-    try {
-        // Increment postCount
-        this.postCount += 1;
-        next();
-    } catch (error) {
-        next(error);
-    }
+const notificationSchema = new mongoose.Schema({
+    Content: String,
+    Read: { type: Boolean, default: false },
+    time: { type: Date, default: Date.now },
 });
 
+//mongodb models creation
 const Post = mongoose.model("Post", postSchema);
-
-
+const Notification = mongoose.model("Notification", notificationSchema);
 
 app.get("/", (req, res) => {
     res.send("Express App Is Running");
@@ -72,7 +69,14 @@ app.post("/upload", async (req, res) => {
 
         await newPost.save();
 
-        console.log("Image saved successfully");
+        //generating notification of profile post uploaded
+        const newNotification = new Notification({
+            Content: "New Image has been uploaded",
+        })
+
+        await newNotification.save();
+
+        console.log("Image uploaded successfully");
         res.status(200).send("Image saved successfully");
     }
     catch (e) {
@@ -85,11 +89,48 @@ app.post("/upload", async (req, res) => {
 app.get("/ProfilePostsList", async (req, res) => {
     try {
         const posts = await Post.find({});
+        console.log("Profile Posts Fetched");
         res.status(200).send(posts);
     } catch (e) {
+        console.log(e);
         res.status(400).send({ msg: e.message })
     }
 })
+
+app.get("/getNotifications", async (req, res) => {
+    try {
+        const notifications = await Notification.find({});
+        // console.log("Notifications Fetched", notifications);
+        console.log("Notifications Fetched");
+        res.status(200).send(notifications);
+    } catch (e) {
+        console.log("Error", e);
+        res.status(400).send({ msg: e.message })
+    }
+})
+
+
+app.delete("/deleteNotifications", async (req, res) => {
+    try {
+        await Notification.deleteMany({});
+        res.status(200).send("All Notifications Cleared");
+    } catch (e) {
+        console.log("Error", e);
+        res.status(400).send({ msg: e.message })
+    }
+})
+
+app.delete("/deleteNotification/:id", async (req, res) => {
+    try {
+        await Notification.findByIdAndDelete(req.params.id);
+        res.status(200).send("Notification deleted");
+        console.log("Notification Deleted");
+    } catch (e) {
+        console.error("Error deleting notification:", e);
+        res.status(500).send("Error deleting notification");
+    }
+});
+
 
 app.listen(4000, function () {
     console.log("Server is up and running on port 4000");
