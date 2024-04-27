@@ -8,8 +8,7 @@ import Sidebar from "./Components/Sidebar/Sidebar";
 import Notifications from "./Pages/Notifications/Notifications";
 import Profile from "./Pages/Profile/Profile";
 import Login from "./Pages/Login/Login";
-import SSignup from "./Pages/SSignup/SSignup";
-// import Signup from "./Pages/Signup/Signup";
+import Signup from "./Pages/Signup/Signup";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import EditProfile from './Pages/EditProfile/EditProfile';
 
@@ -36,8 +35,7 @@ function UnauthenticatedRoutes({ handleLogin }) {
   return (
     <Routes>
       <Route path='/' element={<Login onLogin={handleLogin} />} />
-      {/* <Route path='/signup' element={<Signup />} /> */}
-      <Route path='/signup' element={<SSignup />} />
+      <Route path='/signup' element={<Signup />} />
     </Routes>
   );
 }
@@ -53,9 +51,9 @@ function App() {
     <BrowserRouter>
       <div className='app-container'>
         {/* Pass handleLogin to UnauthenticatedRoutes */}
-        {/* {isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes handleLogin={handleLogin} />} */}
+        {isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes handleLogin={handleLogin} />}
         {/* ........ for frontend development without login/signup/logout.....for testing frontend APIs */}
-        <AuthenticatedRoutes />
+        {/* <AuthenticatedRoutes /> */}
       </div>
     </BrowserRouter>
   );

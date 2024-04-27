@@ -1,159 +1,163 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Signup.css";
 import haya_logo from "../../Components/assets/haya_logo.png";
 import google_logo from "../../Components/assets/google_icon.png"
-import location_logo from "../../Components/assets/location_logo.png"
 import image_logo from "../../Components/assets/image_logo.png"
 
-export default function Signup() {
+
+export default function SSignup({ onsignup }) {
     const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
     const [gender, setGender] = useState("");
     const [birthdate, setBirthdate] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
     const [accountCategory, setAccountCategory] = useState("public");
-    const [region, setRegion] = useState("");
-
-    // Function to handle location access
-    const handleLocationAccess = () => {
-        // Use the Geolocation API to get the user's location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    // Retrieve latitude and longitude
-                    const { latitude, longitude } = position.coords;
-                    // You can use latitude and longitude to fetch the region or any other location-based information
-                    // For now, we'll just set the region to a string
-                    setRegion(`Latitude: ${latitude}, Longitude: ${longitude}`);
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by this browser.');
-        }
-    };
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Add your signup form submission logic here
-        console.log("Form submitted!");
+        const formData = {
+            fullName: fullName,
+            username: username,
+            password: password,
+            gender: gender,
+            birthdate: birthdate,
+            accountCategory: accountCategory
+        };
+
+        console.log(profilePicture);
+
+        try {
+            const response = await fetch('http://localhost:4000/userSignup', {
+                method: 'POST',
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setError(data.message)
+                navigate('/');
+            } else {
+                setError(data.message);
+            }
+        } catch (error) {
+            console.error('signup error:', error);
+            setError('An unexpected error occurred');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className='signup'>
-
-            <div className='signup-left-part'>
+            <div className='left-part'>
                 <img src={haya_logo} alt="Haya Logo" className="logo" />
             </div>
 
             <div className='signup-right-part'>
-                <form onSubmit={handleSubmit}>
-                    <div className='signup-right-upper-part'>
-                        <div className='row'>
+                <div className="signup-form">
+                    <span className='user-signup-span'>User Signup</span>
 
-                            <input
-                                type='text'
-                                className='signup-input-field'
-                                value={fullName}
-                                name='fullName'
-                                placeholder='Your Full Name'
-                                onChange={(e) => setFullName(e.target.value)}
-                            />
-                            <input
-                                type='email'
-                                className='signup-input-field'
-                                value={email}
-                                name='email'
-                                placeholder='Your Email'
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                        <div className='row'>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type='text'
+                            className='input-field'
+                            value={fullName}
+                            name='fullName'
+                            placeholder='Your Full Name'
+                            onChange={(e) => setFullName(e.target.value)}
+                        />
 
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                className='signup-input-field'
-                                value={password}
-                                name='password'
-                                placeholder='Password'
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className="input-field"
+                            value={username}
+                            name='username'
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            className="input-field"
+                            value={password}
+                            name='password'
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
 
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                className='signup-input-field'
-                                value={confirmedPassword}
-                                name='confirmedPassword'
-                                placeholder='Re-Enter Your Password'
-                                onChange={(e) => setConfirmedPassword(e.target.value)}
-                            />
-                        </div>
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            className='input-field'
+                            value={confirmedPassword}
+                            name='confirmedPassword'
+                            placeholder='Re-Enter Your Password'
+                            onChange={(e) => setConfirmedPassword(e.target.value)}
+                            required
+                        />
 
-                        <div className='signup-show-password'>
-                            <input
-                                type="checkbox"
-                                checked={showPassword}
-                                onChange={() => setShowPassword(!showPassword)}
-                            />
-                            <label className="show-password-checkbox" onClick={() => setShowPassword(!showPassword)} >
+                        <div className='show-password'>
+                            <label className="show-password-checkbox">
+                                <input
+                                    type="checkbox"
+                                    checked={showPassword}
+                                    onChange={() => setShowPassword(!showPassword)}
+                                />
                                 Show Password
                             </label>
                         </div>
-                    </div>
 
-                    <div className='signup-selections'>
-                        <label htmlFor="gender-selection">Select Gender : </label>
-                        <select
-                            className='signup-gender-input-field'
-                            value={gender}
-                            onChange={(e) => setGender(e.target.value)}
-                        >
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                        </select>
+                        <div className='signup-selections'>
+                            <div className='signup-selections'>
+                                <label htmlFor="gender-selection">Select Gender : </label>
+                                <div className="select-container">
+                                    <select
+                                        value={gender}
+                                        onChange={(e) => setGender(e.target.value)}
+                                        required
+                                    >
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <div className="arrow">&#9660;</div>
+                                </div>
+                            </div>
 
 
-                        <label className='account-type-selection' htmlFor="account-type-selection">Select Account Type : </label>
-                        <select
-                            className='signup-input-field-account-category'
-                            value={accountCategory}
-                            onChange={(e) => setAccountCategory(e.target.value)}
-                        >
-                            <option value="public">Public Account</option>
-                            <option value="private">Private Account</option>
-                        </select>
-                    </div>
+                            <label className='account-type-selection' htmlFor="account-type-selection">Select Account Type : </label>
+                            <div className="select-container">
+                                <select
+                                    value={accountCategory}
+                                    onChange={(e) => setAccountCategory(e.target.value)}
+                                >
+                                    <option value="public">Public Account</option>
+                                    <option value="private">Private Account</option>
+                                </select>
+                                <div className="arrow">&#9660;</div>
+                            </div>
+                        </div>
 
-                    <div className='birthdate'>
-                        <label>Select Birthdate : </label>
-                        <input
-                            type='date'
-                            className='signup-birthdate-input-field'
-                            value={birthdate}
-                            name='birthdate'
-                            placeholder='Birthdate'
-                            onChange={(e) => setBirthdate(e.target.value)}
-                        />
-                    </div>
-
-                    <div className='signup-lower-part'>
-                        <div className='signup-location-part'>
-                            <button type="button" className='location-access' onClick={handleLocationAccess}> <img src={location_logo} alt='location_logo' className='location_logo' /> Allow Location Access </button>
-
+                        <div className='birthdate'>
+                            <label className='birthdate-label'>Select Birthdate : </label>
                             <input
-                                type='text'
-                                className='signup-input-field'
-                                value={region}
-                                name='region'
-                                placeholder='Region'
-                                readOnly
+                                type='date'
+                                className='input-field'
+                                value={birthdate}
+                                name='birthdate'
+                                placeholder='Birthdate'
+                                onChange={(e) => setBirthdate(e.target.value)}
+                                required
                             />
                         </div>
 
@@ -167,18 +171,23 @@ export default function Signup() {
                             {profilePicture ? (
                                 <img src={URL.createObjectURL(profilePicture)} alt='Profile' className='profile-preview' />
                             ) : (
-                                <span className="choose-profile-text">Choose Profile Picture<img src={image_logo} alt='image-logo' className='image-logo' /></span>
+                                <span className="choose-profile-text">Choose Profile Picture<img src={image_logo} alt='imag-logo' className='image-logo' /></span>
                             )}
                         </div>
-                    </div>
 
 
-                    <button type="submit" className='signup-btn'>Sign Up</button>
-                    <button type="submit" name='google-login' className='signup-btn-google'><div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>Login with Google</span></div></button>
-                    <p className='login-account'>Already have an Account? <Link to="/" className='login-account-link'>Login</Link ></p>
-                </form>
-            </div >
+                        {error && <div className="error-message">{error}</div>}
 
+
+
+                        {/* <form onSubmit={handleSubmit}> */}
+                        <button type="submit" name='simple-signup' className='signup-btn' disabled={loading}>{loading ? 'Signing in...' : 'Signup'}</button>
+                        <button type="submit" name='google-signup' className='signup-btn-google' disabled={loading}>{loading ? 'Signing in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>signup with Google</span></div>}</button>
+                    </form>
+
+                    <p className='signup-account'>Already have an Account? <Link to="/" className='signup-account-link'>Login Account</Link ></p>
+                </div>
+            </div>
         </div >
     );
 }

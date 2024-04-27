@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import "./Profile.css";
 import ProfileGridPic from '../../Components/ProfileGridPic/ProfileGridPic';
@@ -8,6 +8,39 @@ import logout_icon from "../../Components/assets/logout_icon.png"
 
 export default function Profile() {
 
+    const [ProfilePostData, setProfilePostData] = useState([]);
+    const [status, setStatus] = useState("");
+
+    const getProfilePosts = async () => {
+        setStatus("Fetching Posts");
+        const response = await fetch("http://localhost:4000/ProfilePostsList")
+        try {
+            if (response.ok) {
+                const data = await response.json();
+                setStatus("");
+                setProfilePostData(data);
+            } else {
+                setStatus("Failed to fetch Posts!!! Reload please !")
+                console.error("Failed to fetch profile posts");
+            }
+        } catch (e) {
+            console.log("Error Occured : ", e);
+        }
+    }
+
+    useEffect(() => {
+        getProfilePosts();
+    }, [])
+
+    function arrayBufferToBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
 
     return (
         <div className='profile'>
@@ -42,22 +75,19 @@ export default function Profile() {
 
             {/* fetch data from database and map it using ProfileGridPic
             component */}
+            <div>{status}</div>
             <div className='posts-grid'>
-                <ProfileGridPic
-                    image={khan}
-                    number_of_comments="1k"
-                    number_of_likes="12k"
-                />
-                <ProfileGridPic
-                    image={khan}
-                    number_of_comments="1k"
-                    number_of_likes="12k"
-                />
-                <ProfileGridPic
-                    image={khan}
-                    number_of_comments="1k"
-                    number_of_likes="12k"
-                />
+                {
+                    ProfilePostData.map(post => (
+                        <ProfileGridPic
+                            key={post._id}
+                            image={`data:image/jpeg;base64,${arrayBufferToBase64(post.imageData.data)}`}
+                            number_of_comments={post.NOC} // Assuming CommentsList is an array of comments
+                            number_of_likes={post.NOL}
+                        />
+                    ))
+                }
+
             </div>
         </div >
     )
