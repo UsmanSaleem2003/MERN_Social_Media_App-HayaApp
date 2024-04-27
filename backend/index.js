@@ -1,25 +1,21 @@
 const express = require('express');
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { Binary } = require('mongodb');
-// const multer = require("multer");
-// const path = require("path");
-// const fs = require("fs");
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 
 const app = express();
 
 app.use(cors());
 app.use(express.json({ limit: '150mb' }));
 app.use(express.urlencoded({ extended: true, limit: '150mb' }));
-// app.use(bodyParser.json({ limit: '150mb' }));
-// app.use(bodyParser.urlencoded({ extended: true }));
 
-
-// mongoose.connect("mongodb://127.0.0.1:27017/SocialMediaDB", { useNewUrlParser: true })
 mongoose.connect("mongodb://127.0.0.1:27017/SocialMediaDB")
     .then(() => {
-        // console.log("Successfully connected to MongoDB");
         console.log("Connected to mongodb://127.0.0.1:27017/SocialMediaDB");
     })
     .catch((error) => {
@@ -27,15 +23,23 @@ mongoose.connect("mongodb://127.0.0.1:27017/SocialMediaDB")
     });
 
 
+app.use(cookieParser());
+app.use(session({
+    secret: 'This_is_my_sectet_key', // Replace 'your_secret_key' with a real secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}));
+
 //mongodb schemas creation---------------------------  
 
 // defining Users Schema
 const userSchema = new mongoose.Schema({
-    fullname: { type: String, default: "" },
+    fullname: { type: String },
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     gender: { type: String, default: "Male" },
-    account_type: { type: String, default: "Public", enum: ["Private", "Public"] },
+    account_type: { type: String, default: "Public", enum: ["private", "public"] },
     birthdate: { type: Date },
     time: { type: Date, default: Date.now },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
@@ -86,6 +90,31 @@ const User = mongoose.model("User", userSchema);
 app.get("/", (req, res) => {
     res.send("Express App Is Running");
 })
+
+app.post("/userSignup", async (req, res) => {
+    try {
+        const { fullName, username, password, gender, birthdate, accountCategory } = req.body;
+
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const newUser = new User({
+            fullname: fullName,
+            username: username,
+            password: hashedPassword,
+            gender: gender,
+            birthdate: new Date(birthdate),
+            account_type: accountCategory,
+            // profileImage: profilePicture ? profilePicture.path : ''  // Store file path or any other handling logic
+        });
+
+        await newUser.save();
+
+        console.log("User Registered Successfully");
+        res.status(201).send({ message: "User registered successfully" });
+    } catch (error) {
+        console.error("Signup Error:", error);
+        res.status(500).send({ message: "Error occurred during signup" });
+    }
+});
 
 app.post("/upload", async (req, res) => {
     try {
@@ -163,8 +192,6 @@ app.delete("/deleteNotification/:id", async (req, res) => {
         res.status(500).send("Error deleting notification");
     }
 });
-
-
 
 
 app.listen(4000, function () {
