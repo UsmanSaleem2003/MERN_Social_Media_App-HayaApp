@@ -10,18 +10,25 @@ export default function Profile() {
 
     const [ProfilePostData, setProfilePostData] = useState([]);
     const [status, setStatus] = useState("");
+    const [user, setUser] = useState({});
 
     const getProfilePosts = async () => {
         setStatus("Fetching Posts");
-        const response = await fetch("http://localhost:4000/ProfilePostsList")
+        const response = await fetch("http://localhost:4000/ProfilePostsList", {
+            credentials: 'include'
+        });
+
         try {
             if (response.ok) {
                 const data = await response.json();
+                // console.log("Fetched posts data:", data);
                 setStatus("");
-                setProfilePostData(data);
+                setProfilePostData(data.posts);
+                setUser(data.user);
+                console.log(data.user);
             } else {
                 setStatus("Failed to fetch Posts!!! Reload please !")
-                console.error("Failed to fetch profile posts");
+                console.error("Failed to fetch profile posts and user data");
             }
         } catch (e) {
             console.log("Error Occured : ", e);
@@ -29,8 +36,30 @@ export default function Profile() {
     }
 
     useEffect(() => {
-        getProfilePosts();
-    }, [])
+        const fetchData = async () => {
+            await getProfilePosts();
+        };
+
+        fetchData();
+    }, []);
+
+
+    const logout = async () => {
+        try {
+            const response = await fetch("http://localhost:4000/logout", {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (response.ok) {
+                window.location.href = '/login';
+            } else {
+                alert("Failed to logout");
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+            alert("An unexpected error occurred");
+        }
+    };
 
     function arrayBufferToBase64(buffer) {
         let binary = '';
@@ -52,20 +81,19 @@ export default function Profile() {
                 <div className='content'>
 
                     <div className='content-upper'>
-                        <p className='profile-username'>usman.saleem.252</p>
+                        <p className='profile-username'>{user.username}</p>
                         <Link to={"/editprofile"}><img src={edit_icon} alt='edit_icon' className='edit-icon' /><span className='edit-text'>Edit Profile</span></Link>
-                        <Link to={"/"}><img src={logout_icon} alt='logout_icon' className='logout-icon' /><span className='edit-text'>Logout</span></Link>
+                        <button onClick={logout}><img src={logout_icon} alt='logout_icon' className='logout-icon' /><span className='edit-text'>Logout</span></button>
                     </div>
 
                     <div className='content-lower'>
-                        <p>2 posts</p>
-                        <p>139 followers</p>
-                        <p>1,122 following</p>
+                        <p>{user.posts?.length || 0} posts</p>
+                        <p>{user.followers?.length || 0} followers</p>
+                        <p>{user.following?.length || 0} following</p>
                     </div>
 
-
                     <div className='fullname'>
-                        <p>Muhammad Usman Saleem</p>
+                        <p>{user.fullname}</p>
                     </div>
                 </div>
             </div>

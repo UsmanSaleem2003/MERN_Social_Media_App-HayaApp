@@ -39,6 +39,7 @@ export default function AddContent() {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: "include",
                 body: JSON.stringify({ base64ImageData, description }),
             });
 

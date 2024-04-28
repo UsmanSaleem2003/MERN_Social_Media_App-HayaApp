@@ -1,24 +1,22 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Signup.css";
 import haya_logo from "../../Components/assets/haya_logo.png";
-import google_logo from "../../Components/assets/google_icon.png"
-import image_logo from "../../Components/assets/image_logo.png"
+import google_logo from "../../Components/assets/google_icon.png";
+import image_logo from "../../Components/assets/image_logo.png";
 
-
-export default function SSignup({ onsignup }) {
+export default function SSignup() {
     const [fullName, setFullName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
-    const [gender, setGender] = useState("");
+    const [gender, setGender] = useState("male");
     const [birthdate, setBirthdate] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
     const [accountCategory, setAccountCategory] = useState("public");
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,21 +29,19 @@ export default function SSignup({ onsignup }) {
             accountCategory: accountCategory
         };
 
-        console.log(profilePicture);
-
         try {
             const response = await fetch('http://localhost:4000/userSignup', {
                 method: 'POST',
                 headers: {
-                    Accept: "application/json",
-                    "Content-Type": 'application/json',
+                    'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(formData)
             });
             const data = await response.json();
             if (response.ok) {
-                setError(data.message)
-                navigate('/');
+                console.log("User Signup Successful");
+                window.location.href = '/';
             } else {
                 setError(data.message);
             }
