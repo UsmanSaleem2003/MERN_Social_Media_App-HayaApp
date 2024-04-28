@@ -7,6 +7,7 @@ import image_logo from "../../Components/assets/image_logo.png";
 
 export default function SSignup() {
     const [fullName, setFullName] = useState("");
+    const [uniqueUsername, setUniqueUsername] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
@@ -14,6 +15,7 @@ export default function SSignup() {
     const [birthdate, setBirthdate] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
     const [accountCategory, setAccountCategory] = useState("public");
+    const [profileImgURL, setProfileImgURL] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
@@ -22,11 +24,13 @@ export default function SSignup() {
         e.preventDefault();
         const formData = {
             fullName: fullName,
+            uniqueName: uniqueUsername,
             username: username,
             password: password,
             gender: gender,
             birthdate: birthdate,
-            accountCategory: accountCategory
+            accountCategory: accountCategory,
+            profilePic: profileImgURL,
         };
 
         try {
@@ -71,6 +75,16 @@ export default function SSignup() {
                             name='fullName'
                             placeholder='Your Full Name'
                             onChange={(e) => setFullName(e.target.value)}
+                        />
+
+                        <input
+                            type='text'
+                            className='input-field'
+                            value={uniqueUsername}
+                            name='uniqueUsername'
+                            placeholder='Your unique username'
+                            onChange={(e) => setUniqueUsername(e.target.value)}
+                            required
                         />
 
                         <input
@@ -162,21 +176,35 @@ export default function SSignup() {
                                 type='file'
                                 className='signup-image-input-field'
                                 accept='image/*'
-                                onChange={(e) => setProfilePicture(e.target.files[0])}
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (!file) {
+                                        console.error('No file selected');
+                                        return;
+                                    }
+                                    const reader = new FileReader();
+                                    reader.onload = () => {
+                                        const base64ImageData = reader.result.split(',')[1];
+                                        setProfilePicture(base64ImageData);
+                                        setProfileImgURL(base64ImageData)
+                                    };
+                                    reader.onerror = (error) => {
+                                        console.error('File reading error:', error);
+                                    };
+                                    reader.readAsDataURL(file);
+                                }}
                             />
                             {profilePicture ? (
-                                <img src={URL.createObjectURL(profilePicture)} alt='Profile' className='profile-preview' />
+                                <img src={`data:image/jpeg;base64,${profilePicture}`} alt='Profile' className='profile-preview' />
                             ) : (
                                 <span className="choose-profile-text">Choose Profile Picture<img src={image_logo} alt='imag-logo' className='image-logo' /></span>
                             )}
                         </div>
 
 
+
                         {error && <div className="error-message">{error}</div>}
 
-
-
-                        {/* <form onSubmit={handleSubmit}> */}
                         <button type="submit" name='simple-signup' className='signup-btn' disabled={loading}>{loading ? 'Signing in...' : 'Signup'}</button>
                         <button type="submit" name='google-signup' className='signup-btn-google' disabled={loading}>{loading ? 'Signing in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>signup with Google</span></div>}</button>
                     </form>

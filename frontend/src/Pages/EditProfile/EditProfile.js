@@ -17,12 +17,17 @@ export default function EditProfile() {
         //send data and do posting functionality to server
     }
 
+    const handleback = (e) => {
+        e.preventDefault();
+        window.location.href = '/profile';
+    }
+
     return (
         <div className='edit-profile-page'>
             <p>Edit Profile</p>
             <hr className='edit-profile-line' />
 
-            <form className='EditProfileForm' onSubmit={handleSubmit} method='POST'>
+            <form className='EditProfileForm' onSubmit={handleSubmit}>
 
                 <input
                     className='edit-profile-input-field'
@@ -95,7 +100,7 @@ export default function EditProfile() {
                             Choose Profile Picture
                             <img
                                 src={image_logo}
-                                alt='image-logo'
+                                alt='profile_image-logo'
                                 className='image-logo'
                             />
                         </span>
@@ -107,12 +112,21 @@ export default function EditProfile() {
 
                 {error && <div className="error-message">{error}</div>}
 
-                <button
-                    className='update-button'
-                    onClick={handleSubmit}
-                >
-                    Update Profile
-                </button>
+                <div className='edit-profile-btns'>
+
+                    <button
+                        className='update-button'
+                        onClick={handleback}
+                    >
+                        Back
+                    </button>
+                    <button
+                        className='update-button'
+                        onClick={handleSubmit}
+                    >
+                        Update Profile
+                    </button>
+                </div>
             </form>
 
         </div >

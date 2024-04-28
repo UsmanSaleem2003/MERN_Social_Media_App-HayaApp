@@ -49,6 +49,32 @@
     object-fit: cover;
 }
 
+.logout-btn{
+    display: flex;
+    gap: 5px;
+    height: 50px;
+    width: 130px;
+    color: black;
+    padding: 4px 6px;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(226, 226, 226);
+    cursor: pointer;
+}
+
+.logout-btn:hover{
+    transition: 0.5s ease-in-out;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.logout-text{
+    font-size: 16px;
+    font-weight: 300;
+}
+
 .logout-icon{
     height: 20px;
     padding: 0px 10px;
@@ -86,9 +112,31 @@
     color: rgb(41, 39, 39);
 }
 
-.fullname p{
+.fullname {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.user-details1{
+    display: flex;
+    flex-direction: row;
     font-size: large;
     font-weight: 500;
+}
+
+.user-details{
+    gap: 30px;
+    display: flex;
+    flex-direction: row;
+    font-size: smaller;
+    color: rgb(179, 179, 179);
+    cursor:default;
+}
+
+.user-details > span:hover{
+    color: grey;
 }
 
 hr{

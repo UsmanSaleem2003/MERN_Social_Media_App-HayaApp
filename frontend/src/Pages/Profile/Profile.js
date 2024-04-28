@@ -11,6 +11,8 @@ export default function Profile() {
     const [ProfilePostData, setProfilePostData] = useState([]);
     const [status, setStatus] = useState("");
     const [user, setUser] = useState({});
+    const [joiningDate, setJoiningDate] = useState("YYYY/MM/DD");
+    const [birthdate, setbirthdate] = useState("YYYY/MM/DD");
 
     const getProfilePosts = async () => {
         setStatus("Fetching Posts");
@@ -21,11 +23,11 @@ export default function Profile() {
         try {
             if (response.ok) {
                 const data = await response.json();
-                // console.log("Fetched posts data:", data);
                 setStatus("");
                 setProfilePostData(data.posts);
                 setUser(data.user);
-                console.log(data.user);
+                setJoiningDate(formatDate(data.user.time));
+                setbirthdate(formatDate(data.user.birthdate));
             } else {
                 setStatus("Failed to fetch Posts!!! Reload please !")
                 console.error("Failed to fetch profile posts and user data");
@@ -71,19 +73,33 @@ export default function Profile() {
         return window.btoa(binary);
     }
 
+    function formatDate(dateString) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = months[date.getMonth()];
+        const day = date.getDate();
+        return `${day}-${month}-${year}`;
+    }
+
     return (
         <div className='profile'>
 
             <div className='header'>
 
-                <img src={khan} alt="user-profile pic" className='user-profile-pic' />
+                {/* <img src={khan} alt="user-profile pic" className='user-profile-pic' /> */}
+                {/* <img src={`data:image/jpeg;base64,${arrayBufferToBase64(user.profilePic.data)}`} alt="user-profile pic" className='user-profile-pic' /> */}
+                {user.profilePic && (
+                    <img src={`data:image/jpeg;base64,${arrayBufferToBase64(user.profilePic.data)}`} alt="user-profile pic" className='user-profile-pic' />
+                )}
 
                 <div className='content'>
 
                     <div className='content-upper'>
-                        <p className='profile-username'>{user.username}</p>
+                        <p className='profile-username'>{user.uniqueName}</p>
                         <Link to={"/editprofile"}><img src={edit_icon} alt='edit_icon' className='edit-icon' /><span className='edit-text'>Edit Profile</span></Link>
-                        <button onClick={logout}><img src={logout_icon} alt='logout_icon' className='logout-icon' /><span className='edit-text'>Logout</span></button>
+                        <button onClick={logout} className="logout-btn"><img src={logout_icon} alt='logout_icon' className='logout-icon' /><span className='logout-text'>Logout</span></button>
                     </div>
 
                     <div className='content-lower'>
@@ -93,7 +109,15 @@ export default function Profile() {
                     </div>
 
                     <div className='fullname'>
-                        <p>{user.fullname}</p>
+                        <div className='user-details1'>
+                            <span>{user.fullname}</span>
+                        </div>
+                        <div className='user-details'>
+                            <span>Joined : {joiningDate}</span>
+                            <span >{user.username}</span>
+                            <span >Account-type : {user.account_type}</span>
+                            <span>Born : {birthdate}</span>
+                        </div>
                     </div>
                 </div>
             </div>

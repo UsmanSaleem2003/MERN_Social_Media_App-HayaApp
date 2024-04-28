@@ -6,14 +6,19 @@ import "./Notifications.css";
 export default function Notifications() {
 
     const [allNotification, setallNotification] = useState([]);
+    const [user, setUser] = useState({});
 
     const updateNotifications = async () => {
-        const response = await fetch("http://localhost:4000/getNotifications");
+        const response = await fetch("http://localhost:4000/getNotifications", {
+            credentials: "include"
+        });
 
         try {
             if (response.ok) {
                 const data = await response.json();
-                setallNotification(data);
+                const sortedNotifications = data.notifications.sort((a, b) => new Date(b.time) - new Date(a.time));
+                setallNotification(sortedNotifications);
+                setUser(data.user);
                 console.log(data);
             } else {
                 console.error("Failed to fetch notifications");
@@ -26,6 +31,17 @@ export default function Notifications() {
     useEffect(() => {
         updateNotifications();
     }, [])
+
+
+    function arrayBufferToBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
 
     const timeAgo = (isoTime) => {
         const date = new Date(isoTime);
@@ -48,7 +64,10 @@ export default function Notifications() {
     }
 
     const clearNotifications = async () => {
-        const response = await fetch("http://localhost:4000/deleteNotifications", { method: "DELETE" });
+        const response = await fetch("http://localhost:4000/deleteNotifications", {
+            method: "DELETE",
+            credentials: "include",
+        });
 
         try {
             if (response.ok) {
@@ -85,8 +104,11 @@ export default function Notifications() {
                 {
                     allNotification.map(profileNotification => (
                         <div key={profileNotification._id} className="previous-notification">
-                            <img src={khan} alt='notification-profile-pic' className='notification-profile-pic' />
-                            <span className='userprofile-name'>Harry <span>{profileNotification.Content}</span></span>
+                            {user.profilePic && (
+                                <img src={`data:image/jpeg;base64,${arrayBufferToBase64(user.profilePic.data)}`} alt="notification-profile-pic" className='notification-profile-pic' />
+                            )}
+                            {/* <img src={khan} alt='notification-profile-pic' className='notification-profile-pic' /> */}
+                            <span className='userprofile-name'>{user.fullname.slice(0, user.fullname.indexOf(' '))} <span>{profileNotification.Content}</span></span>
                             <span id='time'> - {timeAgo(profileNotification.time)}</span>
                             <img src={cross_icon} alt="Cross Icon" className="cross-icon" onClick={() => deleteNotification(profileNotification._id)} />
                         </div>
