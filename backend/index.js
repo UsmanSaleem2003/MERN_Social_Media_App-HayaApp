@@ -41,11 +41,13 @@ app.use(session({
 // defining Users Schema
 const userSchema = new mongoose.Schema({
     fullname: { type: String },
+    uniqueName: { type: String, unique: true, require: true },
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     gender: { type: String, default: "male" },
     account_type: { type: String, default: "Public", enum: ["private", "public"] },
     birthdate: { type: Date },
+    profilePic: Buffer,
     time: { type: Date, default: Date.now },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
@@ -106,25 +108,27 @@ app.get("/check-auth", (req, res) => {
 
 app.post("/userSignup", async (req, res) => {
     try {
-        const { fullName, username, password, gender, birthdate, accountCategory } = req.body;
+        const { fullName, uniqueName, username, password, gender, birthdate, accountCategory, profilePic } = req.body;
 
+        const imageBuffer = Buffer.from(profilePic, 'base64');
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const newUser = new User({
             fullname: fullName,
+            uniqueName: uniqueName,
             username: username,
             password: hashedPassword,
             gender: gender,
             birthdate: new Date(birthdate),
+            profilePic: new Binary(imageBuffer),
             account_type: accountCategory,
             posts: [],
             notifications: [],
             followers: [],
             following: [],
-            // profileImage: profilePicture ? profilePicture.path : ''  // Store file path or any other handling logic
         });
 
         // req.session.user = { id: newUser._id, username: username, fullname: fullName, gender: gender };
-        req.session.user = { id: req.sessionID, username: username, fullname: fullName, gender: gender, objectId: newUser._id };
+        req.session.user = { id: req.sessionID, username: username, uniqueName: uniqueName, fullname: fullName, gender: gender, objectId: newUser._id };
         res.cookie('username', username, { httpOnly: true, secure: true });
         await newUser.save();
 
@@ -144,7 +148,7 @@ app.post("/userSignup", async (req, res) => {
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     try {
-        const user = await User.findOne({ username: username });
+        const user = await User.findOne({ $or: [{ username: username }, { uniqueName: username }] });
         if (!user) {
             return res.status(401).json({ message: "User not found" });
         }
@@ -154,8 +158,7 @@ app.post("/login", async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-
-        req.session.user = { id: user._id, username: user.username, objectId: user._id };
+        req.session.user = { id: user._id, username: user.username, uniqueName: user.uniqueName, gender: user.gender, objectId: user._id };
         // console.log("Session ID:", req.sessionID);  // Log the session ID
         // console.log("Session:", req.session);      // Log the session object
         res.cookie('user_sid', req.sessionID, { httpOnly: true, secure: true }); // Set cookie
@@ -227,8 +230,8 @@ app.get("/ProfilePostsList", async (req, res) => {
     }
 
     try {
-        const user = await User.findOne({ username: req.session.user.username }).populate("posts");
-        // const user = await User.findOne(req.session.user.id).populate("posts");
+        // const user = await User.findOne({ username: req.session.user.username }).populate("posts");
+        const user = await User.findOne({ _id: req.session.user.objectId }).populate("posts");
 
         if (!user) {
             return res.status(404).send({ message: "User not found" });
@@ -246,20 +249,43 @@ app.get("/ProfilePostsList", async (req, res) => {
 
 //API for getting all notifications 
 app.get("/getNotifications", async (req, res) => {
+
+    if (!req.session.user) {
+        return res.status(401).send({ message: "user is unauthorized" });
+    }
+
     try {
-        const notifications = await Notification.find({});
-        console.log("Notifications Fetched");
-        res.status(200).send(notifications);
+        const user = await User.findOne({ _id: req.session.user.objectId }).populate("notifications");
+        // const notifications = await Notification.find({});
+        const notifications = user.notifications || [];
+
+        if (!notifications) {
+            return res.status(404).send({ message: "User's notifications not found" });
+        }
+
+        console.log("Notifications Fetched", notifications);
+        res.status(200).send({ user, notifications });
     } catch (e) {
         console.log("Error", e);
         res.status(400).send({ msg: e.message })
     }
 })
 
-// API for deleting all notifications
+// API for deleting all notifications of a user
 app.delete("/deleteNotifications", async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).send({ message: "User is unauthorized" });
+    }
+
     try {
-        await Notification.deleteMany({});
+        const user = await User.findOne({ _id: req.session.user.objectId }).populate("notifications");
+        const notificationIds = user.notifications.map(notification => notification._id);
+
+        await Notification.deleteMany({ _id: { $in: notificationIds } });
+
+        user.notifications = [];
+        await user.save();
+
         res.status(200).send("All Notifications Cleared");
     } catch (e) {
         console.log("Error", e);
@@ -267,7 +293,7 @@ app.delete("/deleteNotifications", async (req, res) => {
     }
 })
 
-// API for deleting specific notification
+// API for deleting specific notification of a user
 app.delete("/deleteNotification/:id", async (req, res) => {
     try {
         await Notification.findByIdAndDelete(req.params.id);
