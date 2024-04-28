@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const { Binary } = require('mongodb');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -10,7 +11,10 @@ const saltRounds = 10;
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 app.use(express.json({ limit: '150mb' }));
 app.use(express.urlencoded({ extended: true, limit: '150mb' }));
 
@@ -25,10 +29,11 @@ mongoose.connect("mongodb://127.0.0.1:27017/SocialMediaDB")
 
 app.use(cookieParser());
 app.use(session({
-    secret: 'This_is_my_sectet_key', // Replace 'your_secret_key' with a real secret key
+    secret: 'This_is_my_secret_key',
+    store: MongoStore.create({ mongoUrl: 'mongodb://127.0.0.1:27017/SocialMediaDB' }),
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
+    saveUninitialized: false,
+    cookie: { secure: 'auto', httpOnly: true } // 'auto' will use true if you're on https, otherwise false
 }));
 
 //mongodb schemas creation---------------------------  
@@ -38,14 +43,14 @@ const userSchema = new mongoose.Schema({
     fullname: { type: String },
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    gender: { type: String, default: "Male" },
+    gender: { type: String, default: "male" },
     account_type: { type: String, default: "Public", enum: ["private", "public"] },
     birthdate: { type: Date },
     time: { type: Date, default: Date.now },
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }]
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: [] }],
+    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification', default: [] }]
 });
 
 
@@ -69,7 +74,7 @@ const notificationSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     Content: String,
     Read: { type: Boolean, default: false },
-    type: { type: String, enum: ['New Follower', 'Comment', 'Like'], required: true },
+    type: { type: String, enum: ['New Follower', 'Comment', 'Like', "NewPost"], required: true },
     relatedPost: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: false },
     time: { type: Date, default: Date.now },
 });
@@ -91,6 +96,14 @@ app.get("/", (req, res) => {
     res.send("Express App Is Running");
 })
 
+app.get("/check-auth", (req, res) => {
+    if (req.session.user) {
+        res.json({ isAuthenticated: true });
+    } else {
+        res.json({ isAuthenticated: false });
+    }
+});
+
 app.post("/userSignup", async (req, res) => {
     try {
         const { fullName, username, password, gender, birthdate, accountCategory } = req.body;
@@ -103,26 +116,82 @@ app.post("/userSignup", async (req, res) => {
             gender: gender,
             birthdate: new Date(birthdate),
             account_type: accountCategory,
+            posts: [],
+            notifications: [],
+            followers: [],
+            following: [],
             // profileImage: profilePicture ? profilePicture.path : ''  // Store file path or any other handling logic
         });
 
+        // req.session.user = { id: newUser._id, username: username, fullname: fullName, gender: gender };
+        req.session.user = { id: req.sessionID, username: username, fullname: fullName, gender: gender, objectId: newUser._id };
+        res.cookie('username', username, { httpOnly: true, secure: true });
         await newUser.save();
 
+        // console.log("Session ID:", req.sessionID);  // Log the session ID
+        // console.log("Session:", req.session);      // Log the session object
+        // console.log("Cookie set with session ID");
+
+
         console.log("User Registered Successfully");
-        res.status(201).send({ message: "User registered successfully" });
+        res.status(201).send({ message: "User registered successfully", redirectTo: "/" });
     } catch (error) {
         console.error("Signup Error:", error);
         res.status(500).send({ message: "Error occurred during signup" });
     }
 });
 
-app.post("/upload", async (req, res) => {
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
     try {
+        const user = await User.findOne({ username: username });
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+
+        req.session.user = { id: user._id, username: user.username, objectId: user._id };
+        // console.log("Session ID:", req.sessionID);  // Log the session ID
+        // console.log("Session:", req.session);      // Log the session object
+        res.cookie('user_sid', req.sessionID, { httpOnly: true, secure: true }); // Set cookie
+        // console.log("Cookie set with session ID");
+
+        res.json({ message: "Logged in successfully" });
+    } catch (error) {
+        console.error("Login Error:", error);
+        res.status(500).json({ message: "Error occurred during login" });
+    }
+});
+
+app.get("/logout", (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.log("Failed to destroy the session");
+            res.status(500).send({ message: "Failed to logout" });
+        } else {
+            res.clearCookie('user_sid');
+            res.json({ message: "Logged out successfully" });
+        }
+    });
+});
+
+app.post("/upload", async (req, res) => {
+    // console.log("Uploader information : ", req.session.user)
+    try {
+        if (!req.session.user) {
+            return res.status(401).send({ message: "Unauthorized" });
+        }
 
         const base64ImageData = req.body.base64ImageData;
         const imageBuffer = Buffer.from(base64ImageData, 'base64');
 
         const newPost = new Post({
+            creator: req.session.user.objectId,
             description: req.body.description,
             imageData: new Binary(imageBuffer),
             CommentsList: []
@@ -132,10 +201,15 @@ app.post("/upload", async (req, res) => {
 
         //generating notification of profile post uploaded
         const newNotification = new Notification({
+            user: req.session.user.objectId,
             Content: "New Image has been uploaded",
+            type: "NewPost",
+            relatedPost: newPost._id,
         })
-
         await newNotification.save();
+
+        await User.findByIdAndUpdate(req.session.user.objectId, { $push: { notifications: newNotification._id } });
+        await User.findByIdAndUpdate(req.session.user.objectId, { $push: { posts: newPost._id } });
 
         console.log("Image uploaded successfully");
         res.status(200).send("Image saved successfully");
@@ -146,17 +220,29 @@ app.post("/upload", async (req, res) => {
     }
 });
 
-//API for getting all posts pics
+//API for getting user's profile data
 app.get("/ProfilePostsList", async (req, res) => {
-    try {
-        const posts = await Post.find({});
-        console.log("Profile Posts Fetched");
-        res.status(200).send(posts);
-    } catch (e) {
-        console.log(e);
-        res.status(400).send({ msg: e.message })
+    if (!req.session.user) {
+        return res.status(401).send({ message: "user is unauthorized" });
     }
-})
+
+    try {
+        const user = await User.findOne({ username: req.session.user.username }).populate("posts");
+        // const user = await User.findOne(req.session.user.id).populate("posts");
+
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
+        const posts = user.posts || []; // Use empty array if user.posts is null or undefined
+
+        // console.log("User's data that is being sent : ", user)
+        console.log("User's Profile Data Fetched Successfully");
+        res.status(200).json({ posts, user });
+    } catch (e) {
+        console.error("Failed to fetch posts: ", e);
+        res.status(500).send({ message: "Error occurred while fetching posts" });
+    }
+});
 
 //API for getting all notifications 
 app.get("/getNotifications", async (req, res) => {
@@ -196,4 +282,4 @@ app.delete("/deleteNotification/:id", async (req, res) => {
 
 app.listen(4000, function () {
     console.log("Server is up and running on port 4000");
-});  
+});
