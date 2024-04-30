@@ -48,6 +48,7 @@ const userSchema = new mongoose.Schema({
     account_type: { type: String, default: "Public", enum: ["private", "public"] },
     birthdate: { type: Date },
     profilePic: Buffer,
+    previousSearches: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], default: [] },
     time: { type: Date, default: Date.now },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
@@ -158,10 +159,15 @@ app.post("/login", async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        req.session.user = { id: user._id, username: user.username, uniqueName: user.uniqueName, gender: user.gender, objectId: user._id };
+        // req.session.user = { id: user._id, username: user.username, uniqueName: user.uniqueName, gender: user.gender, objectId: user._id };
+        req.session.user = { id: req.sessionID, username: user.username, uniqueName: user.uniqueName, gender: user.gender, objectId: user._id };
+        res.cookie('user_sid', req.sessionID, { httpOnly: true, secure: true }); // Set cookie
+
+        console.log("Session ID:", req.session.user.id);  // Log the session ID
+        console.log("User ID:", req.session.user.objectId);  // Log the session ID
+
         // console.log("Session ID:", req.sessionID);  // Log the session ID
         // console.log("Session:", req.session);      // Log the session object
-        res.cookie('user_sid', req.sessionID, { httpOnly: true, secure: true }); // Set cookie
         // console.log("Cookie set with session ID");
 
         res.json({ message: "Logged in successfully" });
@@ -302,6 +308,91 @@ app.delete("/deleteNotification/:id", async (req, res) => {
     } catch (e) {
         console.error("Error deleting notification:", e);
         res.status(500).send("Error deleting notification");
+    }
+});
+
+app.post("/searchUsers", async (req, res) => {
+
+    if (!req.session || !req.session.user) {
+        console.error("No session/user found");
+        return res.status(401).send({ message: "Unauthorized - Session invalid or expired" });
+    }
+
+    const { username, gender, accountType } = req.body;
+
+    let query = {
+        $and: [
+            { $or: [{ username: username }, { uniqueName: username }] },
+            { _id: { $ne: req.session.user.objectId } }  // Exclude the logged-in user's ID from the search
+        ]
+    };
+
+    if (gender && gender !== "none") {
+        query.gender = gender;
+    }
+
+    if (accountType && accountType !== "none") {
+        query.account_type = accountType;
+    }
+
+    try {
+        const user = await User.findOne(query);
+        if (!user) {
+            console.log("User not found in Search");
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        const loggedInUserId = req.session.user.objectId;
+        const loggedInUser = await User.findById(loggedInUserId);
+        if (!loggedInUser.previousSearches.includes(user._id)) {
+            loggedInUser.previousSearches.push(user._id);
+            await loggedInUser.save();
+        }
+
+        console.log("User found in Search");
+        res.status(200).json({ message: "User found", user });
+    } catch (e) {
+        console.error("Search Error:", e);
+        res.status(500).json({ message: "Error occurred during searching" });
+    }
+});
+
+app.get("/getPreviousSearches", async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.session.user.objectId);
+        const previousSearchesInfo = await Promise.all(currentUser.previousSearches.map(async (searchId) => {
+            const searchUser = await User.findById(searchId);
+            return {
+                _id: searchUser._id,
+                uniqueName: searchUser.uniqueName,
+                profilePic: searchUser.profilePic // Assuming this is a buffer or base64-encoded image
+            };
+        }));
+
+        console.log(previousSearchesInfo);
+        res.status(200).json({ previousSearchesInfo });
+    } catch (error) {
+        console.error("Error fetching previous searches:", error);
+        res.status(500).json({ message: "Error fetching previous searches" });
+    }
+});
+
+app.get("/clearAllPreviousSearches", async (req, res) => {
+    try {
+        const userId = req.session.user.objectId;
+        const currentUser = await User.findById(userId);
+
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        currentUser.previousSearches = [];
+
+        await currentUser.save();
+        res.status(200).json({ message: "Previous searches cleared successfully" });
+    } catch (error) {
+        console.error("Error clearing previous searches:", error);
+        res.status(500).json({ message: "Error clearing previous searches" });
     }
 });
 
