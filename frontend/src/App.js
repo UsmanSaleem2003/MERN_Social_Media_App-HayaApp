@@ -11,6 +11,7 @@ import Profile from "./Pages/Profile/Profile";
 import Login from "./Pages/Login/Login";
 import Signup from "./Pages/Signup/Signup";
 import EditProfile from './Pages/EditProfile/EditProfile';
+import SearchedProfile from "./Pages/SearchedProfile/SearchedProfile";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/editprofile" element={<EditProfile />} />
                 <Route path="*" element={<Navigate replace to="/" />} />
+                <Route path="/profile/:userId" element={<SearchedProfile />} />
               </>
             ) : (
               <>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import "./Profile.css";
 import ProfileGridPic from '../../Components/ProfileGridPic/ProfileGridPic';
-import khan from "../../Components/assets/khan.jpg";
 import edit_icon from "../../Components/assets/edit_logo.png"
 import logout_icon from "../../Components/assets/logout_icon.png"
 
@@ -88,8 +87,6 @@ export default function Profile() {
 
             <div className='header'>
 
-                {/* <img src={khan} alt="user-profile pic" className='user-profile-pic' /> */}
-                {/* <img src={`data:image/jpeg;base64,${arrayBufferToBase64(user.profilePic.data)}`} alt="user-profile pic" className='user-profile-pic' /> */}
                 {user.profilePic && (
                     <img src={`data:image/jpeg;base64,${arrayBufferToBase64(user.profilePic.data)}`} alt="user-profile pic" className='user-profile-pic' />
                 )}

@@ -34,7 +34,6 @@ export default function Search(e) {
             if (response.ok) {
                 setError(data.message);
                 setfoundUser(data.user);
-                // window.location.href = '/';
             } else {
                 setfoundUser(null);
                 setError("User not found");
@@ -44,6 +43,10 @@ export default function Search(e) {
         }
     }
 
+    const handleUserClick = (userId) => {
+        window.location.href = `/profile/${userId}`;
+    };
+
     function arrayBufferToBase64(buffer) {
         let binary = '';
         const bytes = new Uint8Array(buffer);
@@ -52,6 +55,46 @@ export default function Search(e) {
             binary += String.fromCharCode(bytes[i]);
         }
         return window.btoa(binary);
+    }
+
+
+    const clearAllSearches = async () => {
+        try {
+            const response = await fetch("http://localhost:4000/clearAllPreviousSearches", {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                setPreviousSearches([]);
+            } else {
+                console.log("Error in clearing searches");
+            }
+        } catch (error) {
+            console.log("Error in clearing all searches:", error);
+        }
+    }
+
+
+    const deleteSearch = async (searchId) => {
+        try {
+            const response = await fetch(`http://localhost:4000/deletePreviousSearch/${searchId}`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                setPreviousSearches(previousSearches.filter(search => search._id !== searchId));
+            } else {
+                console.log("Error in deleting search");
+            }
+        } catch (error) {
+            console.log("Error in deleting search:", error);
+        }
     }
 
     useEffect(() => {
@@ -112,7 +155,7 @@ export default function Search(e) {
                     <div className='previous-searches-header-user'>
                         {foundUser !== null ? (
                             error ? (
-                                <div className='user'>
+                                <div className='user' onClick={() => handleUserClick(foundUser._id)}>
                                     <img src={`data:image/jpeg;base64,${arrayBufferToBase64(foundUser.profilePic.data)}`} alt="notification-profile-pic" className='notification-profile-pic' />
                                     <span className='unique-username'>{foundUser.username}</span>
                                 </div>
@@ -126,7 +169,7 @@ export default function Search(e) {
 
                     <div className='previous-searches-header'>
                         <span className='previous-searches-heading'>Previous Searches</span>
-                        <span className='clear-searches'>Clear All</span>
+                        <span className='clear-searches' onClick={clearAllSearches}>Clear All</span>
                     </div>
 
                     {/* get previous searches from user's schema and map them here */}
@@ -134,7 +177,7 @@ export default function Search(e) {
                         <div className="previous-search" key={index} onClick={() => setsearchText(search.uniqueName)}>
                             <img src={`data:image/jpeg;base64,${arrayBufferToBase64(search.profilePic.data)}`} alt="notification-profile-pic" className="notification-profile-pic" />
                             <span>{search.uniqueName}</span>
-                            <img src={cross_icon} alt="Cross Icon" className="cross-icon" />
+                            <img src={cross_icon} alt="Cross Icon" className="cross-icon" onClick={() => deleteSearch(search._id)} />
                         </div>
                     ))}
 
