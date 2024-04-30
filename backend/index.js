@@ -369,7 +369,6 @@ app.get("/getPreviousSearches", async (req, res) => {
             };
         }));
 
-        console.log(previousSearchesInfo);
         res.status(200).json({ previousSearchesInfo });
     } catch (error) {
         console.error("Error fetching previous searches:", error);
@@ -395,6 +394,44 @@ app.get("/clearAllPreviousSearches", async (req, res) => {
         res.status(500).json({ message: "Error clearing previous searches" });
     }
 });
+
+app.delete("/deletePreviousSearch/:searchId", async (req, res) => {
+    try {
+        const userId = req.session.user.objectId;
+        const currentUser = await User.findById(userId);
+
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const searchIndex = currentUser.previousSearches.indexOf(req.params.searchId);
+        if (searchIndex === -1) {
+            return res.status(404).json({ message: "Search not found" });
+        }
+
+        currentUser.previousSearches.splice(searchIndex, 1);
+
+        await currentUser.save();
+        res.status(200).json({ message: "Previous search deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting previous search:", error);
+        res.status(500).json({ message: "Error deleting previous search" });
+    }
+});
+
+
+app.get('/SearchedUser/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user' });
+    }
+});
+
 
 
 app.listen(4000, function () {
