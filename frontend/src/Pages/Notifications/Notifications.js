@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import khan from "../../Components/assets/khan.jpg";
 import cross_icon from "../../Components/assets/cross_icon.png";
 import "./Notifications.css";
 
@@ -108,7 +107,7 @@ export default function Notifications() {
                                 <img src={`data:image/jpeg;base64,${arrayBufferToBase64(user.profilePic.data)}`} alt="notification-profile-pic" className='notification-profile-pic' />
                             )}
                             {/* <img src={khan} alt='notification-profile-pic' className='notification-profile-pic' /> */}
-                            <span className='userprofile-name'>{user.fullname.slice(0, user.fullname.indexOf(' '))} <span>{profileNotification.Content}</span></span>
+                            <span className='userprofile-name'>{user.fullname.slice(0, user.fullname.indexOf(' ') + 1)} <span>{profileNotification.Content}</span></span>
                             <span id='time'> - {timeAgo(profileNotification.time)}</span>
                             <img src={cross_icon} alt="Cross Icon" className="cross-icon" onClick={() => deleteNotification(profileNotification._id)} />
                         </div>

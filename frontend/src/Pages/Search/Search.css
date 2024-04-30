@@ -123,7 +123,7 @@
 
 .previous-searches {
     margin-top: 30px;
-    height: 500px;
+    height: 600px;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
@@ -132,12 +132,53 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+.user{
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start !important;
+    align-items: center;
+    gap: 30px;
+}
+
+.unique-username{
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.findFriend{
+    padding: 15px 190px;
+}
+
+.error-msg{
+    padding: 15px 190px;
+    color: rgb(189, 9, 9) !important;
+}
+
 .previous-searches-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 25px 20px;
     border-bottom: 1px solid #030303;
+}
+
+.previous-searches-header-user {
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    padding: 10px 40px;
+    border-bottom: 1px solid black;
+}
+
+.previous-searches-header-user:hover {
+    background-color: #e2e2e2;
+    cursor: pointer;
+}
+
+.previous-searches-header-user > span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #808080;
 }
 
 .previous-searches-heading {
@@ -158,6 +199,7 @@
     display: flex;
     align-items: center;
     padding: 15px 20px;
+    gap: 30px;
     border-bottom: 1px solid #cecece; /* Add border bottom */
 }
 
