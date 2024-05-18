@@ -13,37 +13,31 @@ export default function Profile() {
     const [joiningDate, setJoiningDate] = useState("YYYY/MM/DD");
     const [birthdate, setbirthdate] = useState("YYYY/MM/DD");
 
-    const getProfilePosts = async () => {
-        setStatus("Fetching Posts");
-        const response = await fetch("http://localhost:4000/ProfilePostsList", {
-            credentials: 'include'
-        });
-
-        try {
-            if (response.ok) {
-                const data = await response.json();
-                setStatus("");
-                setProfilePostData(data.posts);
-                setUser(data.user);
-                setJoiningDate(formatDate(data.user.time));
-                setbirthdate(formatDate(data.user.birthdate));
-            } else {
-                setStatus("Failed to fetch Posts!!! Reload please !")
-                console.error("Failed to fetch profile posts and user data");
-            }
-        } catch (e) {
-            console.log("Error Occured : ", e);
-        }
-    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            await getProfilePosts();
-        };
-
-        fetchData();
+        const getProfilePosts = async () => {
+            setStatus("Fetching Posts");
+            const response = await fetch("http://localhost:4000/ProfilePostsList", {
+                credentials: 'include'
+            });
+            try {
+                if (response.ok) {
+                    const data = await response.json();
+                    setStatus("");
+                    setProfilePostData(data.posts);
+                    setUser(data.user);
+                    setJoiningDate(formatDate(data.user.time));
+                    setbirthdate(formatDate(data.user.birthdate));
+                } else {
+                    setStatus("Failed to fetch Posts!!! Reload please !")
+                    console.error("Failed to fetch profile posts and user data");
+                }
+            } catch (e) {
+                console.log("Error Occured : ", e);
+            }
+        }
+        getProfilePosts();
     }, []);
-
 
     const logout = async () => {
         try {
@@ -122,14 +116,13 @@ export default function Profile() {
             <hr />
 
 
-            {/* fetch data from database and map it using ProfileGridPic
-            component */}
-            <div>{status}</div>
+            {status && <div className='status'>{status}</div>}
             <div className='posts-grid'>
                 {
                     ProfilePostData.map(post => (
                         <ProfileGridPic
                             key={post._id}
+                            postId={post._id}
                             image={`data:image/jpeg;base64,${arrayBufferToBase64(post.imageData.data)}`}
                             number_of_comments={post.NOC}
                             number_of_likes={post.NOL}

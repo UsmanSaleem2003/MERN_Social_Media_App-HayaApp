@@ -17,18 +17,20 @@ export default function EditProfile() {
 
         const updates = {};
         if (fullName) updates.fullName = fullName;
-        if (password && password === confirmPassword) {
-            updates.password = password;
-        } else if (password !== confirmPassword) {
-            setError("Passwords do not match.");
-            return;
+        if (password) {
+            if (password === confirmPassword) {
+                updates.password = password;
+            } else {
+                setError("Passwords do not match.");
+                return;
+            }
         }
         if (accountCategory) updates.accountCategory = accountCategory;
 
         if (profilePicture) {
             const reader = new FileReader();
             reader.onloadend = async () => {
-                const base64ImageData = reader.result.slice(reader.result.indexOf(',') + 1);
+                const base64ImageData = reader.result.split(',')[1];
                 updates.profilePicture = base64ImageData;
                 await updateProfile(updates);
             };
@@ -151,30 +153,26 @@ export default function EditProfile() {
                             />
                         </span>
                     )}
-
-
                 </div>
+
+                {error && <div className="error-message">{error}</div>}
+
+                <div className='edit-profile-btns'>
+                    <button
+                        className='back-btn'
+                        onClick={handleBack}
+                    >
+                        Back
+                    </button>
+                    <button
+                        className='update-button'
+                        type='submit'
+                    >
+                        Update Profile
+                    </button>
+                </div>
+
             </form>
-
-
-            {error && <div className="error-message">{error}</div>}
-
-            <div className='edit-profile-btns'>
-
-                <button
-                    className='update-button'
-                    onClick={handleBack}
-                >
-                    Back
-                </button>
-                <button
-                    className='update-button'
-                    onClick={handleSubmit}
-                >
-                    Update Profile
-                </button>
-            </div>
-
         </div >
     )
 }

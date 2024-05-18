@@ -1,18 +1,41 @@
-import React, { useState } from 'react';
-import "./Post.css";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import './ImageView.css';
 import like_btn from "../assets/like_btn.png";
 import comment_btn from "../assets/comment_btn.png";
 import like_button from "../assets/like_button.png";
 
-export default function Post({ post }) {
-    const [postData, setPostData] = useState(post);
+export default function ImageView() {
+    const { imageId } = useParams();
+    const [postData, setPostData] = useState(null);
     const [comment, setComment] = useState('');
     const [showComments, setShowComments] = useState(false);
     const [like, setLike] = useState(false);
 
+    useEffect(() => {
+        const fetchImageData = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/image/${imageId}`, {
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setPostData(data.post);
+                    console.log(data);
+                } else {
+                    console.error('Failed to fetch image data');
+                }
+            } catch (error) {
+                console.error('Error fetching image data:', error);
+            }
+        };
+
+        fetchImageData();
+    }, [imageId, comment]);
+
     const handleAddLike = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/updateLike/${postData.id}`, {
+            const response = await fetch(`http://localhost:4000/updateLike/${postData._id}`, {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -21,7 +44,7 @@ export default function Post({ post }) {
                 setLike(!like);
                 setPostData(prev => ({
                     ...prev,
-                    number_of_likes: newLikesCount
+                    NOL: newLikesCount
                 }));
             }
         } catch (error) {
@@ -32,7 +55,7 @@ export default function Post({ post }) {
     const handleAddComment = async () => {
         if (!comment.trim()) return;
         try {
-            const response = await fetch(`http://localhost:4000/addComment/${postData.id}`, {
+            const response = await fetch(`http://localhost:4000/addComment/${postData._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -75,7 +98,6 @@ export default function Post({ post }) {
     };
 
     const toggleComments = () => {
-        // console.log(postData.post_comments);
         setShowComments(!showComments);
     };
 
@@ -83,18 +105,50 @@ export default function Post({ post }) {
         window.location.href = `/profile/${userId}`;
     };
 
+    function arrayBufferToBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
+    function timeAgo(isoTime) {
+        const date = new Date(isoTime);
+        const now = new Date();
+        const secondsPast = (now.getTime() - date.getTime()) / 1000;
+        if (secondsPast < 60) {
+            return `${parseInt(secondsPast)} secs ago`;
+        } else if (secondsPast < 3600) {
+            return `${parseInt(secondsPast / 60)} mins ago`;
+        } else if (secondsPast < 86400) {
+            return `${parseInt(secondsPast / 3600)} hours ago`;
+        } else if (secondsPast < 2592000) {
+            return `${parseInt(secondsPast / 86400)} days ago`;
+        } else if (secondsPast < 31536000) {
+            return `${parseInt(secondsPast / 2592000)} months ago`;
+        } else {
+            return `${parseInt(secondsPast / 31536000)} years ago`;
+        }
+    }
+
+    if (!postData) {
+        return <p>Loading...</p>;
+    }
+
     return (
-        <div className='post'>
+        <div className='image'>
             <div className='head'>
-                <img src={`data:image/jpeg;base64,${arrayBufferToBase64(postData.page_logo.data)}`}
+                <img src={`data:image/jpeg;base64,${arrayBufferToBase64(postData.creator.profilePic.data)}`}
                     alt='page_logo'
                     className='page-logo-img'
-                    onClick={() => handleUserClick(postData.creatorId)} // Assuming `page_owner_id` is the ID you need
+                    onClick={() => handleUserClick(postData.creator._id)}
                 />
-
                 <div className='head-titles'>
-                    <span onClick={() => handleUserClick(postData.creatorId)} className='page-title'>{postData.page_title}</span>
-                    <span className='time-ago'> - {timeAgo(postData.time_ago)}</span>
+                    <span className='page-title' onClick={() => handleUserClick(postData.creator._id)}>{postData.creator.uniqueName}</span>
+                    <span className='time-ago'> - {timeAgo(postData.time)}</span>
                 </div>
                 <div className='menu-button' id='menu-button'>
                     <button className='menu-btn'>&#8226;&#8226;&#8226;</button>
@@ -102,7 +156,7 @@ export default function Post({ post }) {
             </div>
 
             <div className='content-pic'>
-                <img onDoubleClick={handleAddLike} src={`data:image/jpeg;base64,${arrayBufferToBase64(postData.content_pic.data)}`} alt="content-pic" />
+                <img onDoubleClick={handleAddLike} src={`data:image/jpeg;base64,${arrayBufferToBase64(postData.imageData.data)}`} alt="content-pic" />
             </div>
 
             <div className='bottom'>
@@ -111,28 +165,28 @@ export default function Post({ post }) {
                     <img src={comment_btn} alt='comment_btn' />
                 </div>
 
-                <span className='likes'>{postData.number_of_likes} likes</span>
+                <span className='likes'>{postData.NOL} likes</span>
 
                 <div className='description'>
-                    <span id='page-title'>{postData.page_title}</span>
-                    <span id='post-description'>{postData.post_description}</span>
+                    <span id='page-title'>{postData.creator.uniqueName}</span>
+                    <span id='post-description'>{postData.description}</span>
                 </div>
 
                 <span className='view-comments' onClick={toggleComments}>
-                    {showComments ? 'Hide Comments' : `View all ${postData.number_of_comments} comments`}
+                    {showComments ? 'Hide Comments' : `View all ${postData.NOC} comments`}
                 </span>
 
                 {showComments ?
                     <div className={showComments ? 'comments show' : 'comments'}>
-                        {postData.post_comments.map((comment, index) => (
-                            <div key={comment.id || index} className='comment'>
+                        {postData.CommentsList.map((comment, index) => (
+                            <div key={comment._id || index} className='comment'>
                                 <img src={`data:image/jpeg;base64,${arrayBufferToBase64(comment.commentby.profilePic.data)}`} alt={`${comment.commentby.username}'s profile`} className='comment-user-pic' />
                                 <div className='comment-details'>
                                     <span id='comment-page-title'>{comment.commentby.uniqueName}</span>
                                     <span id='post-comment'>{comment.commentDescription}</span>
                                 </div>
-                                {comment.commentby._id === postData.currentUser &&
-                                    <button className='delete-comment' onClick={() => handleDeleteComment(postData.id, comment._id)}>Del</button>
+                                {comment.commentby._id === postData._id &&
+                                    <button className='delete-comment' onClick={() => handleDeleteComment(postData._id, comment._id)}>Delete</button>
                                 }
                             </div>
                         ))}
@@ -144,7 +198,6 @@ export default function Post({ post }) {
                     type='text'
                     placeholder='Write a comment...'
                     value={comment}
-                    maxLength={100}
                     onChange={(e) => setComment(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -158,33 +211,4 @@ export default function Post({ post }) {
             <hr className='post-line' />
         </div>
     );
-}
-
-function arrayBufferToBase64(buffer) {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-}
-
-function timeAgo(isoTime) {
-    const date = new Date(isoTime);
-    const now = new Date();
-    const secondsPast = (now.getTime() - date.getTime()) / 1000;
-    if (secondsPast < 60) {
-        return `${parseInt(secondsPast)} secs ago`;
-    } else if (secondsPast < 3600) {
-        return `${parseInt(secondsPast / 60)} mins ago`;
-    } else if (secondsPast < 86400) {
-        return `${parseInt(secondsPast / 3600)} hours ago`;
-    } else if (secondsPast < 2592000) {
-        return `${parseInt(secondsPast / 86400)} days ago`;
-    } else if (secondsPast < 31536000) {
-        return `${parseInt(secondsPast / 2592000)} months ago`;
-    } else {
-        return `${parseInt(secondsPast / 31536000)} years ago`;
-    }
 }

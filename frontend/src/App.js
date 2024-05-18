@@ -12,6 +12,7 @@ import Login from "./Pages/Login/Login";
 import Signup from "./Pages/Signup/Signup";
 import EditProfile from './Pages/EditProfile/EditProfile';
 import SearchedProfile from "./Pages/SearchedProfile/SearchedProfile";
+import ImageView from "./Components/ImageView/ImageView";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,8 +55,9 @@ function App() {
                 <Route path="/create" element={<Create />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/editprofile" element={<EditProfile />} />
-                <Route path="*" element={<Navigate replace to="/" />} />
                 <Route path="/profile/:userId" element={<SearchedProfile />} />
+                <Route path="/image/:imageId" element={<ImageView />} />
+                <Route path="*" element={<Navigate replace to="/" />} />
               </>
             ) : (
               <>

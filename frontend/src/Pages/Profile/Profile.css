@@ -156,3 +156,16 @@ hr{
     height: fit-content;
     margin: 30px auto;
 }
+
+.status{
+    text-align: center;
+    margin-right: 500px;
+    margin-top: 200px;
+    font-size: 50px;
+    width: 90%;
+    background-image: url("../../Components/assets/haya_logo.png");
+    background-size: contain;
+    background-clip:border-box;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

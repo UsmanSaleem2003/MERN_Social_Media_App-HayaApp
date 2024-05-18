@@ -1,9 +1,10 @@
-.post {
+.image{
+    margin: 40px auto;
     box-sizing: border-box;
     width: 480px;
     position: relative;
-    margin-top: 10px;
 }
+
 
 .head {
     padding-bottom: 8px;
@@ -24,7 +25,6 @@
 .head-titles {
     margin-left: 10px;
     display: flex;
-    align-items: center;
     gap: 5px;
 }
 
@@ -34,9 +34,8 @@
 }
 
 .time-ago {
-    color: rgb(201, 201, 201);
-    font-weight: 400;
-    font-size: 13px;
+    color: rgb(180, 180, 180);
+    font-weight: 500;
 }
 
 .menu-button {
