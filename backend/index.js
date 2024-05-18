@@ -61,8 +61,10 @@ const userSchema = new mongoose.Schema({
 // defining Posts schema
 const postSchema = new mongoose.Schema({
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    creatorUniqueName: { type: String, default: "" },
     description: { type: String, default: "" },
     imageData: Buffer,
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
     NOL: { type: Number, default: 0 },
     NOC: { type: Number, default: 0 },
     time: { type: Date, default: Date.now },
@@ -76,7 +78,7 @@ const postSchema = new mongoose.Schema({
 // defining Notifications schema
 const notificationSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    // username: { type: String, default: "" },
+    uniqueName: { type: String, default: "" },
     Content: String,
     Read: { type: Boolean, default: false },
     type: { type: String, enum: ['NewFollower', 'Comment', 'Like', "NewPost"], required: true },
@@ -85,12 +87,12 @@ const notificationSchema = new mongoose.Schema({
 });
 
 // defining Messaging Schema
-const messageSchema = new mongoose.Schema({
-    from: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    to: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    message: String,
-    timestamp: { type: Date, default: Date.now }
-});
+// const messageSchema = new mongoose.Schema({
+//     from: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+//     to: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+//     message: String,
+//     timestamp: { type: Date, default: Date.now }
+// });
 
 //mongodb models creation
 const Post = mongoose.model("Post", postSchema);
@@ -158,19 +160,11 @@ app.post("/login", async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({ message: "Invalid Password" });
         }
 
-        // req.session.user = { id: user._id, username: user.username, uniqueName: user.uniqueName, gender: user.gender, objectId: user._id };
         req.session.user = { id: req.sessionID, username: user.username, uniqueName: user.uniqueName, gender: user.gender, objectId: user._id };
-        res.cookie('user_sid', req.sessionID, { httpOnly: true, secure: true }); // Set cookie
-
-        console.log("Session ID:", req.session.user.id);  // Log the session ID
-        console.log("User ID:", req.session.user.objectId);  // Log the session ID
-
-        // console.log("Session ID:", req.sessionID);  // Log the session ID
-        // console.log("Session:", req.session);      // Log the session object
-        // console.log("Cookie set with session ID");
+        res.cookie('user_sid', req.sessionID, { httpOnly: true, secure: true });
 
         res.json({ message: "Logged in successfully" });
     } catch (error) {
@@ -192,7 +186,6 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/upload", async (req, res) => {
-    // console.log("Uploader information : ", req.session.user)
     try {
         if (!req.session.user) {
             return res.status(401).send({ message: "Unauthorized" });
@@ -203,6 +196,7 @@ app.post("/upload", async (req, res) => {
 
         const newPost = new Post({
             creator: req.session.user.objectId,
+            creatorUniqueName: req.session.user.uniqueName,
             description: req.body.description,
             imageData: new Binary(imageBuffer),
             CommentsList: []
@@ -213,7 +207,7 @@ app.post("/upload", async (req, res) => {
         //generating notification of profile post uploaded
         const newNotification = new Notification({
             user: req.session.user.objectId,
-            // username: res.session.user.username,
+            uniqueName: req.session.user.uniqueName,
             Content: "New Image has been uploaded",
             type: "NewPost",
             relatedPost: newPost._id,
@@ -231,6 +225,7 @@ app.post("/upload", async (req, res) => {
         res.status(500).send("Error occurred while saving the image");
     }
 });
+
 
 //API for getting user's profile data
 app.get("/ProfilePostsList", async (req, res) => {
@@ -271,7 +266,7 @@ app.get("/getNotifications", async (req, res) => {
             return res.status(404).send({ message: "User's notifications not found" });
         }
 
-        console.log("Notifications Fetched", notifications);
+        // console.log("Notifications Fetched", notifications);
         res.status(200).send({ user, notifications });
     } catch (e) {
         console.log("Error", e);
@@ -421,33 +416,6 @@ app.delete("/deletePreviousSearch/:searchId", async (req, res) => {
     }
 });
 
-// app.get('/SearchedUser/:id', async (req, res) => {
-//     const currentUserID = req.session.user.objectId;
-
-//     try {
-//         const currentUser = await User.findById(currentUserID);
-//         const user = await User.findById(req.params.id).populate("posts");
-
-//         if (!user) {
-//             return res.status(404).json({ message: 'User not found' });
-//         }
-
-//         const isFollowing = currentUser.following.includes(user._id);
-//         const requestSent = user.pendingFollowers.includes(currentUserID);
-
-//         res.json({
-//             user: user,
-//             postsData: user.posts || [],
-//             following: isFollowing,
-//             requestSent: requestSent
-//         });
-
-//     } catch (error) {
-//         console.error("Error fetching searched user's data:", error);
-//         res.status(500).json({ message: "Error fetching searched user's data" });
-//     }
-// });
-
 app.get('/SearchedUser/:id', async (req, res) => {
     const currentUserID = req.session.user.objectId;
     const currentUser = await User.findById(currentUserID);
@@ -589,6 +557,150 @@ app.post("/requestCancel/:id", async (req, res) => {
         res.status(500).json({ message: "Error Cancelling Sent Follow Request" });
     }
 })
+
+app.get("/HomeFeed", async (req, res) => {
+    const currentUserID = req.session.user.objectId;
+    const currentUser = await User.findById(currentUserID).populate('following');
+
+    const posts = await Post.find({
+        'creator': { $in: currentUser.following.map(user => user._id) }
+    }).populate('creator', 'uniqueName profilePic')
+        .populate({
+            path: 'CommentsList.commentby',
+            select: 'username uniqueName profilePic'  // Include profile picture
+        })
+        .sort({ time: -1 });
+
+
+
+    res.json(posts.map(post => ({
+        id: post._id,
+        currentUser: currentUserID,
+        creatorId: post.creator._id,
+        page_title: post.creator.uniqueName,
+        page_logo: post.creator.profilePic,
+        time_ago: post.time,
+        content_pic: post.imageData,
+        post_description: post.description,
+        number_of_likes: post.NOL,
+        number_of_comments: post.NOC,
+        post_comments: post.CommentsList
+    })));
+});
+
+app.post('/updateLike/:postId', async (req, res) => {
+    try {
+        const currentUserID = req.session.user.objectId;
+        const currentUserUniqueName = req.session.user.uniqueName;
+
+        const post = await Post.findById(req.params.postId);
+        const postOwner = await User.findById(post.creator);
+
+        const currentUserLiked = post.likedBy.includes(currentUserID);
+
+        if (currentUserLiked) {
+            post.likedBy.pull(currentUserID);
+            post.NOL -= 1;
+        } else {
+            post.likedBy.push(currentUserID);
+            post.NOL += 1;
+
+            const newNotification = new Notification({
+                user: currentUserID,
+                uniqueName: currentUserUniqueName,
+                Content: "New Like on your Post",
+                type: "Like",
+                relatedPost: post._id,
+            })
+            await newNotification.save();
+
+            postOwner.notifications.push(newNotification._id);
+            await postOwner.save();
+        }
+
+        await post.save();
+
+        res.status(200).json(post.NOL);
+    } catch (error) {
+        res.status(500).json({ message: "Error adding like", error });
+    }
+});
+
+app.post('/addComment/:postId', async (req, res) => {
+    const { commentDescription } = req.body;
+    const commentby = req.session.user.objectId;
+
+    const post = await Post.findById(req.params.postId);
+    const postOwner = await User.findById(post.creator);
+    try {
+        const post = await Post.findByIdAndUpdate(
+            req.params.postId,
+            { $push: { CommentsList: { commentDescription, commentby } }, $inc: { NOC: 1 } },
+            { new: true }
+        ).populate('CommentsList.commentby', 'username uniqueName profilePic');
+
+        const newNotification = new Notification({
+            user: req.session.user.objectId,
+            uniqueName: req.session.user.uniqueName,
+            Content: "User Commented on your Post",
+            type: "Comment",
+            relatedPost: post._id,
+        })
+        await newNotification.save();
+
+        postOwner.notifications.push(newNotification._id);
+        await postOwner.save();
+
+        res.status(200).json(post);
+    } catch (error) {
+        res.status(500).json({ message: "Error adding comment", error });
+    }
+});
+
+app.delete('/posts/:postId/comments/:commentId', async (req, res) => {
+    const { postId, commentId } = req.params;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).send({ message: "Post not found" });
+        }
+
+        post.CommentsList = post.CommentsList.filter(comment => comment._id.toString() !== commentId);
+        post.NOC -= 1;
+        await post.save();
+        res.status(200).send({ message: "Comment deleted successfully" });
+    } catch (error) {
+        res.status(500).send({ message: "Failed to delete comment", error: error.message });
+    }
+});
+
+app.post('/updateProfile', async (req, res) => {
+    const { fullName, password, accountCategory, profilePicture } = req.body;
+    const CurrentUserId = req.session.user.id; // Assume user ID is stored in session
+    const CurrentUser = await User.findById(CurrentUserId);
+    const updateData = {};
+
+    if (accountCategory === 'default') {
+        updateData.accountCategory = CurrentUser.account_type;
+    } else if (accountCategory != CurrentUser.account_type) {
+        updateData.accountCategory = accountCategory;
+    }
+
+    if (fullName) updateData.fullName = fullName;
+    if (password) updateData.password = await bcrypt.hash(password, saltRounds);
+    if (profilePicture) {
+        const imageBuffer = Buffer.from(profilePicture, 'base64');
+        updateData.profilePic = new Binary(imageBuffer);
+    }
+
+    console.log(updateData.fullName);
+    try {
+        await User.findByIdAndUpdate(CurrentUserId, updateData);
+        res.json({ success: true, message: "Profile updated successfully." });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error updating profile", error: error.message });
+    }
+});
 
 app.listen(4000, function () {
     console.log("Server is up and running on port 4000");
