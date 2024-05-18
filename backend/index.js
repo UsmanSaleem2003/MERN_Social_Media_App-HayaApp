@@ -242,7 +242,7 @@ app.get("/ProfilePostsList", async (req, res) => {
         const posts = user.posts || [];
 
         // console.log("User's data that is being sent : ", user)
-        console.log("User's Profile Data Fetched Successfully");
+        // console.log("User's Profile Data Fetched Successfully");
         res.status(200).json({ posts, user });
     } catch (e) {
         console.error("Failed to fetch posts: ", e);
@@ -676,31 +676,67 @@ app.delete('/posts/:postId/comments/:commentId', async (req, res) => {
 
 app.post('/updateProfile', async (req, res) => {
     const { fullName, password, accountCategory, profilePicture } = req.body;
-    const CurrentUserId = req.session.user.id; // Assume user ID is stored in session
-    const CurrentUser = await User.findById(CurrentUserId);
-    const updateData = {};
 
-    if (accountCategory === 'default') {
-        updateData.accountCategory = CurrentUser.account_type;
-    } else if (accountCategory != CurrentUser.account_type) {
-        updateData.accountCategory = accountCategory;
-    }
-
-    if (fullName) updateData.fullName = fullName;
-    if (password) updateData.password = await bcrypt.hash(password, saltRounds);
-    if (profilePicture) {
-        const imageBuffer = Buffer.from(profilePicture, 'base64');
-        updateData.profilePic = new Binary(imageBuffer);
-    }
-
-    console.log(updateData.fullName);
     try {
-        await User.findByIdAndUpdate(CurrentUserId, updateData);
-        res.json({ success: true, message: "Profile updated successfully." });
+        const CurrentUserId = req.session.user.objectId;
+        if (!CurrentUserId) {
+            throw new Error('CurrentUserId not found in session');
+        }
+
+        const CurrentUser = await User.findById(CurrentUserId);
+        if (!CurrentUser) {
+            throw new Error(`User with id ${CurrentUserId} not found`);
+        }
+
+        if (fullName) {
+            CurrentUser.fullname = fullName;
+        }
+        if (password) {
+            CurrentUser.password = await bcrypt.hash(password, saltRounds);
+        }
+        if (accountCategory && accountCategory !== 'default' && accountCategory !== CurrentUser.account_type) {
+            CurrentUser.account_type = accountCategory;
+        }
+        if (profilePicture) {
+            const imageBuffer = Buffer.from(profilePicture, 'base64');
+            CurrentUser.profilePic = imageBuffer;
+        }
+
+        // Save the updated user document
+        await CurrentUser.save();
+
+        res.json({ success: true, message: "Profile updated successfully.", data: CurrentUser });
     } catch (error) {
+        console.error("Error updating profile: ", error);
         res.status(500).json({ success: false, message: "Error updating profile", error: error.message });
     }
 });
+
+
+app.get("/image/:imageId", async (req, res) => {
+    const imageId = req.params.imageId;
+
+    try {
+        const post = await Post.findById(imageId)
+            .populate('creator', 'uniqueName profilePic')
+            .populate({
+                path: 'CommentsList.commentby',
+                select: 'username uniqueName profilePic'  // Include profile picture
+            })
+            .sort({ time: -1 });
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (!post.creator || !post.creator.uniqueName || !post.creator.profilePic) {
+            console.error("Populated fields are missing or incorrect", post.creator);
+        }
+        res.status(200).json({ post: post });
+    } catch (e) {
+        res.status(500).json({ message: "Internal Server Error", error: e })
+    }
+})
 
 app.listen(4000, function () {
     console.log("Server is up and running on port 4000");
