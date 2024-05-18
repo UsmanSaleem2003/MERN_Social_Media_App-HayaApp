@@ -131,7 +131,7 @@ export default function Profile() {
                         <ProfileGridPic
                             key={post._id}
                             image={`data:image/jpeg;base64,${arrayBufferToBase64(post.imageData.data)}`}
-                            number_of_comments={post.NOC} // Assuming CommentsList is an array of comments
+                            number_of_comments={post.NOC}
                             number_of_likes={post.NOL}
                         />
                     ))

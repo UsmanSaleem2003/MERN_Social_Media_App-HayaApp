@@ -4,23 +4,69 @@ import image_logo from "../../Components/assets/image_logo.png"
 
 export default function EditProfile() {
 
-    const [fullName, setFullName] = useState("")
-    const [Password, setPassword] = useState("")
-    const [ConfirmPassword, setConfirmPassword] = useState("")
+    const [fullName, setFullName] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [accountCategory, setAccountCategory] = useState("public");
     const [profilePicture, setProfilePicture] = useState(null);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const handleSubmit = () => {
-        //send data and do posting functionality to server
-    }
+        const updates = {};
+        if (fullName) updates.fullName = fullName;
+        if (password && password === confirmPassword) {
+            updates.password = password;
+        } else if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+        if (accountCategory) updates.accountCategory = accountCategory;
 
-    const handleback = (e) => {
+        if (profilePicture) {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64ImageData = reader.result.slice(reader.result.indexOf(',') + 1);
+                updates.profilePicture = base64ImageData;
+                await updateProfile(updates);
+            };
+            reader.readAsDataURL(profilePicture);
+        } else {
+            await updateProfile(updates);
+        }
+    };
+
+    const updateProfile = async (updates) => {
+        try {
+            const response = await fetch("http://localhost:4000/updateProfile", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify(updates),
+            });
+            const result = await response.json();
+            if (result.success) {
+                window.location.href = '/profile';
+            } else {
+                setError(result.message);
+
+                setTimeout(() => {
+                    setError("");
+                }, 2000);
+            }
+        } catch (error) {
+            setError("Failed to update profile. Please try again.");
+        }
+    };
+
+    const handleBack = (e) => {
         e.preventDefault();
         window.location.href = '/profile';
-    }
+    };
 
     return (
         <div className='edit-profile-page'>
@@ -42,7 +88,7 @@ export default function EditProfile() {
                 <input
                     className='edit-profile-input-field'
                     type={showPassword ? "text" : "password"}
-                    value={Password}
+                    value={password}
                     placeholder='Enter new Password'
                     onChange={(e) => { setPassword(e.target.value) }}
                 />
@@ -52,9 +98,9 @@ export default function EditProfile() {
                 <input
                     className='edit-profile-input-field'
                     type={showPassword ? "text" : "password"}
-                    value={ConfirmPassword}
-                    onChange={(e) => { setConfirmPassword(e.target.value) }}
+                    value={confirmPassword}
                     placeholder='Confirm new Password'
+                    onChange={(e) => { setConfirmPassword(e.target.value) }}
                 />
 
                 <div className='edit-page-show-password'>
@@ -78,7 +124,7 @@ export default function EditProfile() {
                         value={accountCategory}
                         onChange={(e) => setAccountCategory(e.target.value)}
                     >
-                        <option value="">Default</option>
+                        <option value="default">Default</option>
                         <option value="public">Public Account</option>
                         <option value="private">Private Account</option>
                     </select>
@@ -108,26 +154,26 @@ export default function EditProfile() {
 
 
                 </div>
-
-
-                {error && <div className="error-message">{error}</div>}
-
-                <div className='edit-profile-btns'>
-
-                    <button
-                        className='update-button'
-                        onClick={handleback}
-                    >
-                        Back
-                    </button>
-                    <button
-                        className='update-button'
-                        onClick={handleSubmit}
-                    >
-                        Update Profile
-                    </button>
-                </div>
             </form>
+
+
+            {error && <div className="error-message">{error}</div>}
+
+            <div className='edit-profile-btns'>
+
+                <button
+                    className='update-button'
+                    onClick={handleBack}
+                >
+                    Back
+                </button>
+                <button
+                    className='update-button'
+                    onClick={handleSubmit}
+                >
+                    Update Profile
+                </button>
+            </div>
 
         </div >
     )

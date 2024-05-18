@@ -1,0 +1,169 @@
+.profile{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: auto;
+    width:fit-content;
+    margin-top: 30px;
+}
+
+.user-profile-pic{
+    width: 150px;
+    height: 150px;
+    border-radius: 100px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    gap: 20px;
+    margin-left: 30px;
+    width:fit-content;
+}
+
+.content-upper{
+    display: flex;
+    flex-direction: row;
+    gap: 35px;
+    margin-bottom: -15px;
+}
+
+.profile-username{
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.edit-icon{
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+}
+
+.action-btn{
+    display: flex;
+    gap: 5px;
+    height: 50px;
+    width: 130px;
+    color: black;
+    padding: 4px 6px;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(226, 226, 226);
+    cursor: pointer;
+}
+
+.action-btn:hover{
+    transition: 0.5s ease-in-out;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.logout-text{
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.logout-icon{
+    height: 20px;
+    padding: 0px 10px;
+}
+
+.content a{
+    display: flex;
+    gap: 5px;
+    height: 50px;
+    width: 130px;
+    color: black;
+    padding: 4px 6px;
+    text-decoration: none;
+    font-size: 17px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: rgb(226, 226, 226);
+}
+
+.content a:hover{
+    transition: 0.5s ease-in-out;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.content-lower{
+    display: flex;
+    flex-direction: row;
+    gap: 55px;
+    margin-bottom: -30px;
+}
+
+.content-lower p{
+    font-weight: 600;
+    color: rgb(41, 39, 39);
+}
+
+.fullname {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.user-details1{
+    display: flex;
+    flex-direction: row;
+    font-size: large;
+    font-weight: 500;
+}
+
+.user-details{
+    gap: 30px;
+    display: flex;
+    flex-direction: row;
+    font-size: smaller;
+    color: rgb(179, 179, 179);
+    cursor:default;
+}
+
+.user-details > span:hover{
+    color: grey;
+}
+
+hr{
+    width: 80%;
+    margin-top: 40px;
+    border: none;
+    height: 1px;
+    border-radius: 100px;
+    background-color: #9e9e9e;
+}
+
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width:90%;
+    height: fit-content;
+    margin: 30px auto;
+}
+
+.private-account-text{
+    width: fit-content;
+    padding: 20px 80px;
+    margin: 20px auto;
+    font-weight: 600;
+    border-radius: 2px;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: rgb(235, 235, 235);
+}

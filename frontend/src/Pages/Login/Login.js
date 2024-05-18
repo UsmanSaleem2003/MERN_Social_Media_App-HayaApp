@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import "./Login.css";
 import haya_logo from "../../Components/assets/haya_logo.png";
-import google_logo from "../../Components/assets/google_icon.png";
+// import google_logo from "../../Components/assets/google_icon.png";
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -28,9 +28,11 @@ export default function Login() {
             if (response.ok) {
                 console.log("User Login Successful")
                 window.location.href = '/';
-                // navigate('/', { replace: true });  // Redirect to the home page
             } else {
                 setError(data.message);
+                setTimeout(() => {
+                    setError("");
+                }, 2000);
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -79,7 +81,6 @@ export default function Login() {
                                 Show Password
                             </label>
 
-                            <label className='password-forgotten'>Password Forgotten</label>
                         </div>
 
 
@@ -87,7 +88,7 @@ export default function Login() {
 
 
                         <button type="submit" name='simple-login' className='login-btn' disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-                        <button type="submit" name='google-login' className='login-btn-google' disabled={loading}>{loading ? 'Logging in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>Login with Google</span></div>}</button>
+                        {/* <button type="submit" name='google-login' className='login-btn-google' disabled={loading}>{loading ? 'Logging in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>Login with Google</span></div>}</button> */}
                     </form>
 
                     <p className='signup-account'>Don't have an Account? <Link to="/signup" className='signup-account-link'>Create Account</Link ></p>

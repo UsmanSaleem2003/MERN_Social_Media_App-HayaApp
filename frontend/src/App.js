@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import "./App.css";
 import Home from "./Pages/Home/Home";
-import Messages from "./Pages/Messages/Messages";
+import FollowRequests from "./Pages/FollowRequests/FollowRequests";
 import Search from "./Pages/Search/Search";
 import Create from "./Pages/Create/Create";
 import Sidebar from "./Components/Sidebar/Sidebar";
@@ -43,13 +43,13 @@ function App() {
     <BrowserRouter>
       <div className='app-container'>
         {isLoggedIn && <Sidebar />}
-        <div className='routess'>
+        <div className='routess' style={{ marginLeft: isLoggedIn ? '200px' : '0px' }}>
           <Routes>
             {isLoggedIn ? (
               <>
                 <Route path="/" element={<Home />} />
                 <Route path="/search" element={<Search />} />
-                <Route path="/messages" element={<Messages />} />
+                <Route path="/followRequests" element={<FollowRequests />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/create" element={<Create />} />
                 <Route path="/profile" element={<Profile />} />

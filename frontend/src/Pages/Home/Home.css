@@ -44,3 +44,27 @@
   body.scrollTop-btn-visible .scroll-to-top {
     display: block;
   }
+
+.no-feed{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.no-feed-text{
+  font-size: 14px;
+  color: grey;
+}
+
+.no-feed-line{
+  height: 2px;
+  background-color: gray;
+  width: 30%;
+}
+
+.loading{
+  text-align: center;
+  margin-right: 500px;
+}

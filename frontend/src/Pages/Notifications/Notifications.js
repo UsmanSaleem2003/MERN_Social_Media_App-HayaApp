@@ -17,6 +17,7 @@ export default function Notifications() {
                 const data = await response.json();
                 const sortedNotifications = data.notifications.sort((a, b) => new Date(b.time) - new Date(a.time));
                 setallNotification(sortedNotifications);
+                console.log(sortedNotifications);
                 setUser(data.user);
                 console.log(data);
             } else {

@@ -48,12 +48,13 @@ const userSchema = new mongoose.Schema({
     account_type: { type: String, default: "Public", enum: ["private", "public"] },
     birthdate: { type: Date },
     profilePic: Buffer,
-    previousSearches: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], default: [] },
     time: { type: Date, default: Date.now },
+    previousSearches: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], default: [] },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: [] }],
-    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification', default: [] }]
+    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification', default: [] }],
+    pendingFollowers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }]
 });
 
 
@@ -75,9 +76,10 @@ const postSchema = new mongoose.Schema({
 // defining Notifications schema
 const notificationSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    // username: { type: String, default: "" },
     Content: String,
     Read: { type: Boolean, default: false },
-    type: { type: String, enum: ['New Follower', 'Comment', 'Like', "NewPost"], required: true },
+    type: { type: String, enum: ['NewFollower', 'Comment', 'Like', "NewPost"], required: true },
     relatedPost: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: false },
     time: { type: Date, default: Date.now },
 });
@@ -211,6 +213,7 @@ app.post("/upload", async (req, res) => {
         //generating notification of profile post uploaded
         const newNotification = new Notification({
             user: req.session.user.objectId,
+            // username: res.session.user.username,
             Content: "New Image has been uploaded",
             type: "NewPost",
             relatedPost: newPost._id,
@@ -236,13 +239,12 @@ app.get("/ProfilePostsList", async (req, res) => {
     }
 
     try {
-        // const user = await User.findOne({ username: req.session.user.username }).populate("posts");
         const user = await User.findOne({ _id: req.session.user.objectId }).populate("posts");
 
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
-        const posts = user.posts || []; // Use empty array if user.posts is null or undefined
+        const posts = user.posts || [];
 
         // console.log("User's data that is being sent : ", user)
         console.log("User's Profile Data Fetched Successfully");
@@ -419,20 +421,174 @@ app.delete("/deletePreviousSearch/:searchId", async (req, res) => {
     }
 });
 
+// app.get('/SearchedUser/:id', async (req, res) => {
+//     const currentUserID = req.session.user.objectId;
+
+//     try {
+//         const currentUser = await User.findById(currentUserID);
+//         const user = await User.findById(req.params.id).populate("posts");
+
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+
+//         const isFollowing = currentUser.following.includes(user._id);
+//         const requestSent = user.pendingFollowers.includes(currentUserID);
+
+//         res.json({
+//             user: user,
+//             postsData: user.posts || [],
+//             following: isFollowing,
+//             requestSent: requestSent
+//         });
+
+//     } catch (error) {
+//         console.error("Error fetching searched user's data:", error);
+//         res.status(500).json({ message: "Error fetching searched user's data" });
+//     }
+// });
 
 app.get('/SearchedUser/:id', async (req, res) => {
+    const currentUserID = req.session.user.objectId;
+    const currentUser = await User.findById(currentUserID);
+
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).populate("posts");
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.json(user);
+
+        const isFollowing = currentUser.following.includes(user._id);
+        const isCurrentUserInPendingRequest = user.pendingFollowers.includes(currentUserID);
+        let followingStatus = false;
+        let pendingRequestStatus = false;
+
+        if (isFollowing) {
+            followingStatus = true;
+        }
+
+        if (isCurrentUserInPendingRequest) {
+            pendingRequestStatus = true;
+        }
+
+        res.json({
+            user: user,
+            postsData: user.posts || [],
+            following: followingStatus,
+            pendingRequest: pendingRequestStatus
+        });
+
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching user' });
+        res.status(500).json({ message: "Error fetching searched user's Data" });
     }
 });
 
 
+// GET Api for Follow Requests
+app.get('/pendingFollowRequests', async (req, res) => {
+    const currentUserID = req.session.user.objectId;
+
+    try {
+        const currentUser = await User.findById(currentUserID).populate('pendingFollowers', 'profilePic uniqueName _id');
+        if (!currentUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const pendingRequests = currentUser.pendingFollowers.map(user => ({
+            id: user._id,
+            profilePic: user.profilePic,
+            uniqueName: user.uniqueName
+        }));
+
+        res.json({ pendingRequests });
+    } catch (error) {
+        console.error("Error fetching pending follow requests:", error);
+        res.status(500).json({ message: "Error fetching pending follow requests" });
+    }
+});
+
+// ---------------------------------Follow Handling------------------------------------------
+
+// POST to send a follow request
+app.post("/sendFollowRequest/:id", async (req, res) => {
+    const userId = req.session.user.objectId;
+    const userToFollow = await User.findById(req.params.id);
+    if (!userToFollow) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    if (userToFollow.pendingFollowers.includes(userId)) {
+        return res.status(400).json({ message: 'Follow request already sent' });
+    }
+    userToFollow.pendingFollowers.push(userId);
+    await userToFollow.save();
+    res.status(200).json({ message: 'Follow request sent' });
+});
+
+// POST to accept a follow request
+app.post("/acceptFollowRequest/:followerId", async (req, res) => {
+    const CurrentUserId = req.session.user.objectId;
+    const followerId = req.params.followerId;
+    const CurrentUser = await User.findById(CurrentUserId);
+    const followerUser = await User.findById(followerId);
+
+    if (!CurrentUser || !followerUser) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    CurrentUser.followers.push(followerId);
+    followerUser.following.push(CurrentUserId);
+    CurrentUser.pendingFollowers = CurrentUser.pendingFollowers.filter(id => id.toString() !== followerId);
+    await CurrentUser.save();
+    await followerUser.save();
+    res.status(200).json({ message: 'Follow request accepted' });
+});
+
+// POST to reject a follow request
+app.post("/rejectFollowRequest/:followerId", async (req, res) => {
+    const userId = req.session.user.objectId;
+    const followerId = req.params.followerId;
+    const user = await User.findById(userId);
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    user.pendingFollowers = user.pendingFollowers.filter(id => id.toString() !== followerId);
+    await user.save();
+    res.status(200).json({ message: 'Follow request rejected' });
+});
+
+// POST to unfollow a user
+app.post("/unfollow/:id", async (req, res) => {
+    const userId = req.session.user.objectId;
+    const userToUnfollowId = req.params.id;
+    const CurrentUser = await User.findById(userId);
+    const userToUnfollow = await User.findById(userToUnfollowId);
+    if (!CurrentUser || !userToUnfollow) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    CurrentUser.following = CurrentUser.following.filter(id => id.toString() !== userToUnfollowId);
+    userToUnfollow.followers = userToUnfollow.followers.filter(id => id.toString() !== userId);
+    await CurrentUser.save();
+    await userToUnfollow.save();
+    res.status(200).json({ message: 'Successfully unfollowed' });
+});
+
+app.post("/requestCancel/:id", async (req, res) => {
+    const requestSentToID = req.params.id;
+    const currentUserID = req.session.user.objectId;
+    const requestSentTo = await User.findById(requestSentToID);
+
+    if (!requestSentTo) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    try {
+        requestSentTo.pendingFollowers = requestSentTo.pendingFollowers.filter(id => id.toString() !== currentUserID);
+        await requestSentTo.save();
+        res.status(200).json({ message: 'Follow request cancelled' });
+    } catch (error) {
+        res.status(500).json({ message: "Error Cancelling Sent Follow Request" });
+    }
+})
 
 app.listen(4000, function () {
     console.log("Server is up and running on port 4000");

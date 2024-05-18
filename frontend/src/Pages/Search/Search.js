@@ -172,9 +172,8 @@ export default function Search(e) {
                         <span className='clear-searches' onClick={clearAllSearches}>Clear All</span>
                     </div>
 
-                    {/* get previous searches from user's schema and map them here */}
                     {previousSearches.map((search, index) => (
-                        <div className="previous-search" key={index} onClick={() => setsearchText(search.uniqueName)}>
+                        <div className="previous-search" key={index} onClick={() => handleUserClick(search._id)}>
                             <img src={`data:image/jpeg;base64,${arrayBufferToBase64(search.profilePic.data)}`} alt="notification-profile-pic" className="notification-profile-pic" />
                             <span>{search.uniqueName}</span>
                             <img src={cross_icon} alt="Cross Icon" className="cross-icon" onClick={() => deleteSearch(search._id)} />
@@ -184,6 +183,6 @@ export default function Search(e) {
                 </div>
 
             </div>
-        </div>
+        </div >
     )
 }

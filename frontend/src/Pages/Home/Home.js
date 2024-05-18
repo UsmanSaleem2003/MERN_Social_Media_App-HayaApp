@@ -1,52 +1,55 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import "./Home.css";
 import Post from "../../Components/Post/Post";
-import { PostsDataContext } from "../../Context/PostDataContextProvider"
 
 export default function Home() {
+    const [postsData, setPostsData] = useState([]);
+    const [showNoFeed, setShowNoFeed] = useState(false);
 
-    const postsData = useContext(PostsDataContext);
-    //home will fetch data from database using server
-    //and will map the data on the post component by giving required props to it to make it dynamic 
+    setTimeout(() => {
+        setShowNoFeed(true);
+    }, 2000);
 
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+
+    const getHomeFeed = async () => {
+        try {
+            const response = await fetch("http://localhost:4000/HomeFeed", {
+                method: "GET",
+                credentials: "include",
+            });
+            if (response.ok) {
+                const posts = await response.json();
+                setPostsData(posts);
+                console.log(posts);
+            } else {
+                throw new Error('Failed to fetch posts');
+            }
+        } catch (error) {
+            console.error("Error in execution of getHomeFeed function:", error);
+        }
     };
 
-
     useEffect(() => {
-        const handleScroll = () => {
-            const scrollPosition = window.scrollY;
-            const halfScreenHeight = window.innerHeight / 2;
-
-            if (scrollPosition > halfScreenHeight) {
-                document.body.classList.add('scrollTop-btn-visible');
-            } else {
-                document.body.classList.remove('scrollTop-btn-visible');
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
+        getHomeFeed();
     }, []);
 
     return (
         <div className='home'>
-
             {postsData.map(post => (
                 <Post key={post.id} post={post} />
             ))}
 
-            <button className="scroll-to-top" onClick={scrollToTop}>
-                <span>&#8593;</span>
-            </button>
-
+            {showNoFeed ? <NoFeed /> : <p className='loading'> Wait a while!!! Fetching Feed... </p>}
         </div>
-    )
+    );
+}
+
+function NoFeed() {
+    return (
+        <div className='no-feed'>
+            <div className='no-feed-line'></div>
+            <p className='no-feed-text'> No more feed available </p>
+            <div className='no-feed-line'></div>
+        </div>
+    );
 }

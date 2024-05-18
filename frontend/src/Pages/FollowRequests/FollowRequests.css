@@ -1,0 +1,97 @@
+.follow-requests{
+    margin: 30px auto;
+    height: 540px;
+    width: 800px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(243, 243, 243);
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.pending-requests {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 20px;
+    border-bottom: 1px solid #030303;
+}
+
+.pending-requests-heading {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.clear-requests {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.clear-requests:hover {
+    text-decoration: underline;
+}
+
+.pending-request {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    width: 100%;
+    border-bottom: 1px solid #cecece;
+}
+
+.pending-request span{
+    padding-left: 20px;
+    font-weight: 600;
+}
+
+.pending-request:hover{
+    background-color: #e2e2e2;
+    cursor: pointer;
+}
+
+.pending-request:last-child {
+    border-bottom: none;
+}
+
+.setting{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    border-radius: 25px;
+    /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+}
+.setting:hover{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.btns{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    margin-left: 10px;
+    position: sticky;
+}
+
+.btns > button{
+    width: 120px;
+    height: 40px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.accept{
+    background-color: rgb(88, 88, 240);
+}
+
+.accept:hover, .reject:hover{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.reject{
+    background-color: rgb(250, 93, 93);
+}

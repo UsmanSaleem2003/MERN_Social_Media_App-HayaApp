@@ -99,10 +99,9 @@ export default function AddContent() {
         fetch(imgUrl)
             .then((res) => res.blob())
             .then(async (blob) => {
-                // Create a Blob from the data URL
+
                 const imageBlob = new Blob([blob], { type: "image/jpeg" });
 
-                // Use showSaveFilePicker to prompt the user for a file location
                 const fileHandle = await window.showSaveFilePicker({
                     suggestedName: "captured_image.jpg",
                     types: [
@@ -115,7 +114,6 @@ export default function AddContent() {
                     ],
                 });
 
-                // Create a WritableStream and write the Blob to it
                 const writable = await fileHandle.createWritable();
                 await writable.write(imageBlob);
                 await writable.close();
