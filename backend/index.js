@@ -571,9 +571,7 @@ app.get("/HomeFeed", async (req, res) => {
         })
         .sort({ time: -1 });
 
-
-
-    res.json(posts.map(post => ({
+    const postsData = posts.map(post => ({
         id: post._id,
         currentUser: currentUserID,
         creatorId: post.creator._id,
@@ -585,7 +583,23 @@ app.get("/HomeFeed", async (req, res) => {
         number_of_likes: post.NOL,
         number_of_comments: post.NOC,
         post_comments: post.CommentsList
-    })));
+    }));
+
+    res.json({ postsData, currentUserID: req.session.user.objectId });
+
+    // res.json(posts.map(post => ({
+    //     id: post._id,
+    //     currentUser: currentUserID,
+    //     creatorId: post.creator._id,
+    //     page_title: post.creator.uniqueName,
+    //     page_logo: post.creator.profilePic,
+    //     time_ago: post.time,
+    //     content_pic: post.imageData,
+    //     post_description: post.description,
+    //     number_of_likes: post.NOL,
+    //     number_of_comments: post.NOC,
+    //     post_comments: post.CommentsList
+    // })));
 });
 
 app.post('/updateLike/:postId', async (req, res) => {
@@ -732,7 +746,7 @@ app.get("/image/:imageId", async (req, res) => {
         if (!post.creator || !post.creator.uniqueName || !post.creator.profilePic) {
             console.error("Populated fields are missing or incorrect", post.creator);
         }
-        res.status(200).json({ post: post });
+        res.status(200).json({ post: post, currentUserID: req.session.user.objectId });
     } catch (e) {
         res.status(500).json({ message: "Internal Server Error", error: e })
     }
