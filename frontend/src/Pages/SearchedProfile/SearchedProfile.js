@@ -15,7 +15,6 @@ export default function SearchedProfile() {
     const [birthdate, setbirthdate] = useState("YYYY/MM/DD");
     const [postsData, setpostsData] = useState([]);
 
-
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -128,7 +127,6 @@ export default function SearchedProfile() {
         return `${day}-${month}-${year}`;
     }
 
-
     return (
         <div className='profile'>
             <div className='header'>
@@ -182,6 +180,8 @@ export default function SearchedProfile() {
                             postsData.map(post => (
                                 <ProfileGridPic
                                     key={post._id}
+                                    postId={post._id}
+                                    userId={userData._id}
                                     image={`data:image/jpeg;base64,${arrayBufferToBase64(post.imageData.data)}`}
                                     number_of_comments={post.NOC}
                                     number_of_likes={post.NOL}

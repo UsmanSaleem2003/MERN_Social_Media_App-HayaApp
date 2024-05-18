@@ -57,6 +57,7 @@ function App() {
                 <Route path="/editprofile" element={<EditProfile />} />
                 <Route path="/profile/:userId" element={<SearchedProfile />} />
                 <Route path="/image/:imageId" element={<ImageView />} />
+                <Route path="/profile/:userId/image/:imageId" element={<ImageView />} />
                 <Route path="*" element={<Navigate replace to="/" />} />
               </>
             ) : (

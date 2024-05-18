@@ -123,6 +123,7 @@ export default function Profile() {
                         <ProfileGridPic
                             key={post._id}
                             postId={post._id}
+                            userId={user._id}
                             image={`data:image/jpeg;base64,${arrayBufferToBase64(post.imageData.data)}`}
                             number_of_comments={post.NOC}
                             number_of_likes={post.NOL}

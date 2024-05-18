@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./Post.css";
 import like_btn from "../assets/like_btn.png";
 import comment_btn from "../assets/comment_btn.png";
 import like_button from "../assets/like_button.png";
+import cross_icon from "../../Components/assets/cross_icon.png";
 
-export default function Post({ post }) {
+export default function Post({ post, currentUserID }) {
     const [postData, setPostData] = useState(post);
     const [comment, setComment] = useState('');
     const [showComments, setShowComments] = useState(false);
     const [like, setLike] = useState(false);
+    const navigate = useNavigate();
 
     const handleAddLike = async () => {
         try {
@@ -75,12 +78,15 @@ export default function Post({ post }) {
     };
 
     const toggleComments = () => {
-        // console.log(postData.post_comments);
         setShowComments(!showComments);
     };
 
     const handleUserClick = (userId) => {
-        window.location.href = `/profile/${userId}`;
+        if (userId === currentUserID) {
+            navigate("/profile");
+        } else {
+            navigate(`/profile/${userId}`);
+        }
     };
 
     return (
@@ -126,13 +132,13 @@ export default function Post({ post }) {
                     <div className={showComments ? 'comments show' : 'comments'}>
                         {postData.post_comments.map((comment, index) => (
                             <div key={comment.id || index} className='comment'>
-                                <img src={`data:image/jpeg;base64,${arrayBufferToBase64(comment.commentby.profilePic.data)}`} alt={`${comment.commentby.username}'s profile`} className='comment-user-pic' />
+                                <img onClick={() => handleUserClick(comment.commentby._id)} src={`data:image/jpeg;base64,${arrayBufferToBase64(comment.commentby.profilePic.data)}`} alt={`${comment.commentby.username}'s profile`} className='comment-user-pic' />
                                 <div className='comment-details'>
-                                    <span id='comment-page-title'>{comment.commentby.uniqueName}</span>
+                                    <span onClick={() => handleUserClick(comment.commentby._id)} id='comment-page-title'>{comment.commentby.uniqueName}</span>
                                     <span id='post-comment'>{comment.commentDescription}</span>
                                 </div>
                                 {comment.commentby._id === postData.currentUser &&
-                                    <button className='delete-comment' onClick={() => handleDeleteComment(postData.id, comment._id)}>Del</button>
+                                    <button className='delete-comment' onClick={() => handleDeleteComment(postData.id, comment._id)}><img src={cross_icon} alt='cross_sign' className='delete-btn-img' /></button>
                                 }
                             </div>
                         ))}

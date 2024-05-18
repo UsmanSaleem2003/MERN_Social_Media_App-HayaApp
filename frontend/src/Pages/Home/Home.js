@@ -5,10 +5,11 @@ import Post from "../../Components/Post/Post";
 export default function Home() {
     const [postsData, setPostsData] = useState([]);
     const [showNoFeed, setShowNoFeed] = useState(false);
+    const [currentUserID, setCurrentUserId] = useState("");
 
     setTimeout(() => {
         setShowNoFeed(true);
-    }, 2000);
+    }, 500);
 
 
     const getHomeFeed = async () => {
@@ -18,9 +19,10 @@ export default function Home() {
                 credentials: "include",
             });
             if (response.ok) {
-                const posts = await response.json();
-                setPostsData(posts);
-                console.log(posts);
+                const data = await response.json();
+                setPostsData(data.postsData);
+                setCurrentUserId(data.currentUserID);
+                // console.log(data);
             } else {
                 throw new Error('Failed to fetch posts');
             }
@@ -36,7 +38,7 @@ export default function Home() {
     return (
         <div className='home'>
             {postsData.map(post => (
-                <Post key={post.id} post={post} />
+                <Post key={post.id} post={post} currentUserID={currentUserID} />
             ))}
 
             {showNoFeed ? <NoFeed /> : <p className='loading'> Wait a while!!! Fetching Feed... </p>}

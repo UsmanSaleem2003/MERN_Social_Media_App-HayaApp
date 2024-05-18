@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './ImageView.css';
 import like_btn from "../assets/like_btn.png";
 import comment_btn from "../assets/comment_btn.png";
@@ -8,9 +8,11 @@ import like_button from "../assets/like_button.png";
 export default function ImageView() {
     const { imageId } = useParams();
     const [postData, setPostData] = useState(null);
+    const [currentUserID, setCurrentUserId] = useState("");
     const [comment, setComment] = useState('');
     const [showComments, setShowComments] = useState(false);
     const [like, setLike] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchImageData = async () => {
@@ -21,7 +23,7 @@ export default function ImageView() {
                 if (response.ok) {
                     const data = await response.json();
                     setPostData(data.post);
-                    console.log(data);
+                    setCurrentUserId(data.currentUserID);
                 } else {
                     console.error('Failed to fetch image data');
                 }
@@ -102,7 +104,11 @@ export default function ImageView() {
     };
 
     const handleUserClick = (userId) => {
-        window.location.href = `/profile/${userId}`;
+        if (userId === currentUserID) {
+            navigate("/profile");
+        } else {
+            navigate(`/profile/${userId}`);
+        }
     };
 
     function arrayBufferToBase64(buffer) {
@@ -180,9 +186,9 @@ export default function ImageView() {
                     <div className={showComments ? 'comments show' : 'comments'}>
                         {postData.CommentsList.map((comment, index) => (
                             <div key={comment._id || index} className='comment'>
-                                <img src={`data:image/jpeg;base64,${arrayBufferToBase64(comment.commentby.profilePic.data)}`} alt={`${comment.commentby.username}'s profile`} className='comment-user-pic' />
+                                <img onClick={() => handleUserClick(comment.commentby._id)} src={`data:image/jpeg;base64,${arrayBufferToBase64(comment.commentby.profilePic.data)}`} alt={`${comment.commentby.username}'s profile`} className='comment-user-pic' />
                                 <div className='comment-details'>
-                                    <span id='comment-page-title'>{comment.commentby.uniqueName}</span>
+                                    <span onClick={() => handleUserClick(comment.commentby._id)} id='comment-page-title'>{comment.commentby.uniqueName}</span>
                                     <span id='post-comment'>{comment.commentDescription}</span>
                                 </div>
                                 {comment.commentby._id === postData._id &&

@@ -8,7 +8,7 @@ export default function ProfileGridPic(props) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate(`/image/${props.postId}`);
+        navigate(`/profile/${props.userId}/image/${props.postId}`);
     };
 
     return (

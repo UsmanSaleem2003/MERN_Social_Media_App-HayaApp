@@ -208,5 +208,14 @@
 }
 
 .delete-comment{
-    border: 1px solid;
+    border: none !important;
+    cursor: pointer;
+    background: none;
+    width: 30px;
+    height: 10px;
+}
+
+.delete-btn-img{
+    width: 10px;
+    height: 10px;
 }
