@@ -5,7 +5,7 @@ import haya_logo from "../../Components/assets/haya_logo.png";
 import google_logo from "../../Components/assets/google_icon.png";
 import image_logo from "../../Components/assets/image_logo.png";
 
-export default function SSignup() {
+export default function Signup() {
     const [fullName, setFullName] = useState("");
     const [uniqueUsername, setUniqueUsername] = useState("");
     const [username, setUsername] = useState("");
