@@ -1,0 +1,78 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #282c34;
+  color: white;
+}
+
+.posts {
+  padding: 20px;
+  background-color: #282c34;
+  color: white;
+  /* height: 100vh; */
+}
+
+.posts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.posts-table th,
+.posts-table td {
+  padding: 12px;
+  /* text-align: left; */
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  color: white;
+}
+
+.posts-table th {
+  background-color: #333;
+}
+
+.posts-table td {
+  background-color: #444;
+}
+
+.posts-table button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.posts-table button:hover {
+  background-color: #ff1a1a;
+}
+
+.viewProfile {
+  cursor: pointer;
+  position: relative; /* Necessary for tooltip positioning */
+}
+
+.viewProfile .tooltip-text {
+  visibility: hidden;
+  width: 140px;
+  background-color: #727272;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 70%;
+  left: 50%;
+  margin-left: -70px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.viewProfile:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

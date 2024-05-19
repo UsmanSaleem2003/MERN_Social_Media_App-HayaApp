@@ -1,0 +1,108 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  background-color: #282c34;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.logo {
+  color: white;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 100px auto;
+  font-size: 50px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  user-select: none;
+  /* border: 1px solid green; */
+  background-image: url("../../Components/assets/neon3.jpg ");
+  background-size: contain;
+  background-clip: border-box;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: default;
+  transition: text-shadow 0.3s ease;
+  text-shadow: rgba(8, 201, 201, 0.5) 0px 54px 55px,
+    rgba(8, 201, 201, 0.4) 0px -12px 30px, rgba(8, 201, 201, 0.4) 0px 4px 6px,
+    rgba(8, 201, 201, 0.6) 0px 12px 13px, rgba(8, 201, 201, 0.3) 0px -3px 5px;
+}
+
+.logo:hover {
+  text-shadow: 2px 2px rgba(8, 201, 201, 0.5);
+}
+
+.admin-home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.admin-btn {
+  margin: 20px;
+  padding: 20px 40px;
+  font-size: 24px;
+  color: #fff;
+  background: #222;
+  border: 2px solid rgba(0, 92, 92, 1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 92, 92, 1);
+}
+
+.admin-btn:hover {
+  border: 2px solid #0ff;
+  color: #0ff;
+  background: #333;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(170, 170, 170);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgb(236, 236, 236);
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgb(170, 170, 170);
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  display: none;
+  opacity: 0.8;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.scroll-to-top:hover {
+  opacity: 1;
+  background-color: rgb(78, 78, 78);
+}
+
+body.scrollTop-btn-visible .scroll-to-top {
+  display: block;
+}
