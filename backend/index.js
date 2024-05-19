@@ -7,14 +7,21 @@ const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
 
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
+
 app.use(express.json({ limit: '150mb' }));
 app.use(express.urlencoded({ extended: true, limit: '150mb' }));
 
@@ -751,6 +758,112 @@ app.get("/image/:imageId", async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error: e })
     }
 })
+
+// --------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------
+// Admin Panel------------------------------------------------------------------------------------------
+
+app.get('/server-users', async (req, res) => {
+    try {
+        const users = await User.find()
+            .populate('followers following posts')
+            .exec();
+
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+app.delete('/server-users/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        await Post.deleteMany({ creator: userId });
+
+        await User.updateMany(
+            { $or: [{ followers: userId }, { following: userId }] },
+            { $pull: { followers: userId, following: userId } }
+        );
+
+        await Post.updateMany(
+            { likedBy: userId },
+            { $pull: { likedBy: userId } }
+        );
+
+        await Notification.deleteMany({ user: userId });
+
+        await User.findByIdAndDelete(userId);
+
+        res.send('User deleted');
+    } catch (err) {
+        console.error('Error deleting user:', err);
+        res.status(500).send('Error deleting user');
+    }
+});
+
+
+
+app.get('/server-posts', async (req, res) => {
+    try {
+        const posts = await Post.find().populate('creator likedBy CommentsList.commentby').exec();
+        res.json(posts);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+app.delete('/server-posts/:id', async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        // Find the post to be deleted
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        // Find the user who created the post
+        const user = await User.findById(post.creator);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Delete the post from the user's posts array
+        user.posts = user.posts.filter(postId => postId.toString() !== post._id.toString());
+        await user.save();
+
+        // Delete the post
+        await Post.findByIdAndDelete(postId);
+
+        res.send('Post deleted');
+    } catch (err) {
+        console.error('Error deleting post:', err);
+        res.status(500).send('Error deleting post');
+    }
+});
+
+
+app.get('/server-users/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+            .populate('followers following posts')
+            .exec();
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+        res.json(user);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
 
 app.listen(4000, function () {
     console.log("Server is up and running on port 4000");
