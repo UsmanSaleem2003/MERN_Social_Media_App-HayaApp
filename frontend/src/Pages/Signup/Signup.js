@@ -22,6 +22,37 @@ export default function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Get current date
+        const currentDate = new Date();
+
+        // Get selected birthdate
+        const selectedBirthdate = new Date(birthdate);
+
+        // Calculate the age based on the birthdate
+        var age = currentDate.getFullYear() - selectedBirthdate.getFullYear();
+
+        // Adjust the age calculation if the current date is before the birthday this year
+        if (currentDate.getMonth() < selectedBirthdate.getMonth() ||
+            (currentDate.getMonth() === selectedBirthdate.getMonth() && currentDate.getDate() < selectedBirthdate.getDate())) {
+            age--;
+        }
+
+        // Validate age
+        if (age < 18) {
+            setError('You must be at least 18 years old to sign up.');
+            return;
+        }
+
+        // Validate birthdate range (allowing selection from more than one century ago)
+        const minBirthdate = new Date();
+        minBirthdate.setFullYear(minBirthdate.getFullYear() - 100); // 100 years ago
+
+        if (selectedBirthdate > currentDate || selectedBirthdate < minBirthdate) {
+            setError('Please select a valid birthdate.');
+            return;
+        }
+
         const formData = {
             fullName: fullName,
             uniqueName: uniqueUsername,
@@ -206,7 +237,7 @@ export default function Signup() {
                         {error && <div className="error-message">{error}</div>}
 
                         <button type="submit" name='simple-signup' className='signup-btn' disabled={loading}>{loading ? 'Signing in...' : 'Signup'}</button>
-                        <button type="submit" name='google-signup' className='signup-btn-google' disabled={loading}>{loading ? 'Signing in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>signup with Google</span></div>}</button>
+                        {/* <button type="submit" name='google-signup' className='signup-btn-google' disabled={loading}>{loading ? 'Signing in...' : <div className='google-btn'><img className='google-icon' src={google_logo} alt='google-logo' /><span>signup with Google</span></div>}</button> */}
                     </form>
 
                     <p className='signup-account'>Already have an Account? <Link to="/" className='signup-account-link'>Login Account</Link ></p>
